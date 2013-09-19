@@ -1,0 +1,11 @@
+{
+  "name": "tumblr-browsr",
+  "version": "0.0.0",
+  "description": "interface for browsing tumblr photo blogs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "author": "",
+  "license": "BSD"
+}
