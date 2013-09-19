@@ -1,0 +1,10 @@
+{
+  "couchapp": {
+    "db": "https://instance_uri/database",
+    "app": "app.js",
+    "options": {
+      "okay_if_exists": true,
+      "okay_if_missing": true
+    }
+  }
+}

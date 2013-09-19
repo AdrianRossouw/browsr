@@ -1,0 +1,30 @@
+{
+  "name": "tumblr-browsr",
+  "version": "0.0.1",
+  "description": "ui for browsing tumblr photo blogs",
+  "main": "app.js",
+  "dependencies": {
+    "couchapp": "0.10.x"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-couchapp": "~0.2.0",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-template": "~0.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com//tumblr-browsr.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com//tumblr-browsr/issues"
+  }
+}
