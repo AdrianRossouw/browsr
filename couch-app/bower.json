@@ -1,0 +1,21 @@
+{
+  "name": "tumblr-browsr",
+  "version": "0.0.0",
+  "authors": [
+    "Adrian Rossouw <adrian@daemon.co.za>"
+  ],
+  "description": "ui for browsing tumblr blogs",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "CornerCouch": "*",
+    "angular-masonry": "~0.4.0"
+  }
+}

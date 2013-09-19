@@ -9,6 +9,7 @@ function get_templates (source, target) {
     template[target + file] = [source + file];
   });
 
+  console.log(template);
   return template;
 }
 
@@ -73,6 +74,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-template');
   grunt.loadNpmTasks('grunt-couchapp');
 
   // Default task(s).
