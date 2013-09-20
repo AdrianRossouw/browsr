@@ -16,16 +16,15 @@ var defaults = {
     start: 1
 };
 
-
 var options = {
     timeout: 10,
-    max: 1,
+    max: 3,
     retries: 3   
 };
 var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
 
 exports.job = new nodeio.Job({
-    input: _.range(1, 5, 5),
+    input: _.range(1, 1000, 50),
     run: function (num) {
         var options = { start: num };
         _.defaults(options, defaults);
@@ -87,20 +86,24 @@ function mapJson(options, $) {
     return function mapFn() {
         var $el = $(this);
 
+        var id = options.name + '+' + $el.attr('id') ;
         var img = $el.find('photo-url[max-width=1280]').text();
         var tags = $el.find('tag').map(function() { return $(this).text(); });
         var ext = path.extname(url.parse(img).pathname);
+
         return {
-            _id: options.name + '+' + $el.attr('id'),
-            url: $el.attr('url'),
-            type: 'photo',
-            date: $el.attr('date-gmt'),
-            timestamp: $el.attr('unix-timestamp'),
-            width: $el.attr('width'),
-            height: $el.attr('height'),
-            image: img,
-            extension: ext.replace(/^\./,''),
-            tags: tags
+            _id       : id,
+            id        : id,
+            url       : $el.attr('url'),
+            type      : 'photo',
+            date      : $el.attr('date-gmt'),
+            timestamp : $el.attr('unix-timestamp'),
+            width     : $el.attr('width'),
+            height    : $el.attr('height'),
+            reblogKey : $el.attr('reblog-key'),
+            image     : img,
+            extension : ext.replace(/^\./,''),
+            tags      : tags
         };
     };
 }
