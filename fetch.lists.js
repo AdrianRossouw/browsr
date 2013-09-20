@@ -18,13 +18,13 @@ var defaults = {
 
 var options = {
     timeout: 10,
-    max: 5,
+    max: 4,
     retries: 3   
 };
 var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
 
 exports.job = new nodeio.Job({
-    input: _.range(1, 100, 50),
+    input: _.range(2000, 3500, 100),
     run: function (num) {
         var options = { start: num };
         _.defaults(options, defaults);
@@ -65,7 +65,7 @@ function saveDocument(post, next) {
 }
 
 function streamAttachment(post, next) {
-    debug('streamAttachment', post._id, post.rev);
+    debug('streamAttachment', post.image, post._id, post.rev);
 
     var reader = request.get(post.image);
     var writer = db.attachment.insert(
