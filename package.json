@@ -7,5 +7,11 @@
     "test": "mocha -R spec"
   },
   "author": "",
-  "license": "BSD"
+  "license": "BSD",
+  "dependencies": {
+    "node.io": "~0.5.1",
+    "underscore": "~1.5.2",
+    "cheerio": "~0.12.2",
+    "nano": "~4.1.3"
+  }
 }
