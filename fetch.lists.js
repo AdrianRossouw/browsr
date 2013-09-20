@@ -1,11 +1,12 @@
-var nodeio  = require('node.io');
 var cheerio = require('cheerio');
-var debug = require('debug')('tumblr:fetch.lists');
+var nodeio  = require('node.io');
+var request = require('request');
+var debug   = require('debug')('tumblr:fetch.lists');
 var async   = require('async');
 var path    = require('path');
-var url    = require('url');
-var _       = require('underscore');
+var url     = require('url');
 var db      = require('nano')('http://localhost:5984/tumblr');
+var _       = require('underscore');
 
 _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g };
 
@@ -66,7 +67,14 @@ function saveDocument(post, next) {
 
 function streamAttachment(post, next) {
     debug('streamAttachment', post._id, post.rev);
-    next('fail');
+
+    var reader = request.get(post.image);
+    var writer = db.attachment.insert(
+        post._id, 'image.' + post.extension,
+        null, 'image/' + post.extension,
+        { rev: post.rev }, next);
+
+    reader.pipe(writer);
 }
 
 function completed(err, result) {
