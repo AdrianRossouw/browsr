@@ -12,24 +12,24 @@ _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g };
 
 var defaults = {
     name: 'tof34',
-    count: 5,
+    count: 50,
     start: 1
 };
 
 var options = {
     timeout: 10,
-    max: 3,
+    max: 5,
     retries: 3   
 };
 var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
 
 exports.job = new nodeio.Job({
-    input: _.range(1, 1000, 50),
+    input: _.range(1, 100, 50),
     run: function (num) {
         var options = { start: num };
         _.defaults(options, defaults);
         var url = tpl(options);
-
+        console.log(url);
         this.get(url, function(err, data, headers) {
             if (err) { return this.fail(err); }
 
@@ -37,16 +37,16 @@ exports.job = new nodeio.Job({
             var posts = $('tumblr post').map(mapJson(options, $));
             debug('fetched post count', posts.length);
 
-            async.filter(posts, filterExisting, doEachSeries.bind(this));
+            async.filter(posts, filterExisting, doEachLimit.bind(this));
         });
     }
 });
 
 function filterExisting(post, next) { db.head(post._id, next); }
 
-function doEachSeries(posts) {
+function doEachLimit(posts) {
     debug('new post count', posts.length);
-    async.eachSeries(posts, doWaterfall, completed.bind(this)); 
+    async.eachLimit(posts, 5, doWaterfall, completed.bind(this)); 
 }
 
 function doWaterfall(post, next) {
@@ -86,7 +86,7 @@ function mapJson(options, $) {
     return function mapFn() {
         var $el = $(this);
 
-        var id = options.name + '+' + $el.attr('id') ;
+        var id = options.name + '--' + $el.attr('id') ;
         var img = $el.find('photo-url[max-width=1280]').text();
         var tags = $el.find('tag').map(function() { return $(this).text(); });
         var ext = path.extname(url.parse(img).pathname);
