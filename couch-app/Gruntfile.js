@@ -66,6 +66,9 @@ module.exports = function (grunt) {
                 files: get_templates('src/views/', 'attachments/')
             }
         },
+        rmcouchdb: {
+            app: config.couchapp
+        },
         mkcouchdb: {
             app: config.couchapp
         },
