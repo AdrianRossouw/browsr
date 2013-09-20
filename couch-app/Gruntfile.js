@@ -23,11 +23,6 @@ module.exports = function (grunt) {
                 browser: true
             }
         },
-        bower: {
-            all: {
-                dest: 'attachments/js/bower.js'
-            }
-        },
         concat: {
             options: {
                 // define a string to put between each file in the concatenated output
@@ -36,7 +31,24 @@ module.exports = function (grunt) {
             dist: {
                 // the files to concatenate, in order
                 src: [
-                    'attachments/js/bower.js',
+                    "bower_components/jquery/jquery.js",
+                    "bower_components/jquery-bridget/jquery.bridget.js",
+                    "bower_components/get-style-property/get-style-property.js",
+                    "bower_components/get-size/get-size.js",
+                    "bower_components/eventEmitter/EventEmitter.js",
+                    "bower_components/eventie/eventie.js",
+                    "bower_components/doc-ready/doc-ready.js",
+                    "bower_components/matches-selector/matches-selector.js",
+                    "bower_components/outlayer/item.js",
+                    "bower_components/outlayer/outlayer.js",
+                    "bower_components/masonry/masonry.js",
+                    "bower_components/imagesloaded/imagesloaded.js",
+
+                    "bower_components/angular/angular.min.js",
+                    "bower_components/angular-masonry/angular-masonry.js",
+                    "bower_components/CornerCouch/angular-cornercouch.js",
+
+                    //'attachments/js/bower.js',
                     'src/js/*.js'
                 ],
                 // the location of the resulting JS file
@@ -82,14 +94,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-bower-concat');
     grunt.loadNpmTasks('grunt-template');
     grunt.loadNpmTasks('grunt-couchapp');
 
     // Default task(s).
     grunt.registerTask('default', [
         'jshint',
-        'bower',
         'concat',
         'uglify',
         'cssmin',

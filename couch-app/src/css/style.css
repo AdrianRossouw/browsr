@@ -1,1 +1,17 @@
-body { color: #333 }
+body { color: #333; padding: 1em; }
+
+            .masonry-brick {
+                display: none;
+            }
+
+            .masonry-brick img {
+                width: 300px;
+            }
+            .masonry-brick img.selected {
+                width: 100%;
+                max-width: 1280px;
+            }
+
+            .masonry-brick.loaded {
+                display: block;
+            }

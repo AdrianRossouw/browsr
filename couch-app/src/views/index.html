@@ -6,12 +6,17 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
     <body>
-        <h1><%= title %></h1>
-        <p><%= subtitle %></p>
-        <div class="container" ng-controller="ctrlThumbs">
-            <div class='panel' ng-repeat='row in tumblr.rows'>
-                <img src="/tumblr/{{ row.id }}/image.jpg"> </img>
+        <h1 class='page-title'><%= title %><small><%= subtitle %></small></h1>
+        <div>
+            <div class='row' ng-controller="ctrlThumbs">
+                <div class='col-lg-12'>
+            <div masonry id='masonry-ctrl'>
+                <div class='masonry-brick' ng-repeat='brick in tumblr.rows'>
+                    <img ng-src="/tumblr/{{ brick.id }}/image.jpg" ng-class="{ 'selected': $index == selectedIndex }" ng-click="itemClicked($index, $event)">
+                </div>
             </div>
+        </div>
+        </div>
         </div>
 
 

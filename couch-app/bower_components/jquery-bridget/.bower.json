@@ -1,0 +1,20 @@
+{
+  "name": "jquery-bridget",
+  "version": "1.0.0",
+  "main": "jquery.bridget.js",
+  "description": "Bridget makes jQuery widgets",
+  "devDependencies": {
+    "jquery": ">=1.4.2",
+    "qunit": "~1.10"
+  },
+  "homepage": "https://github.com/desandro/jquery-bridget",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "387d51af87cece57d862d453c82c44888695169d"
+  },
+  "_source": "git://github.com/desandro/jquery-bridget.git",
+  "_target": "~1.0",
+  "_originalSource": "jquery-bridget"
+}

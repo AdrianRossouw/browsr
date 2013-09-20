@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "CornerCouch": "*"
+    "CornerCouch": "*",
+    "angular-masonry": "~0.4.0"
   }
 }
