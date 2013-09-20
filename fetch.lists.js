@@ -24,12 +24,11 @@ var options = {
 var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
 
 exports.job = new nodeio.Job({
-    input: _.range(2000, 3500, 50),
+    input: _.range(1, 200, 50),
     run: function (num) {
         var options = { start: num };
         _.defaults(options, defaults);
         var url = tpl(options);
-        console.log(url);
         this.get(url, function(err, data, headers) {
             if (err) { return this.fail(err); }
 
@@ -37,6 +36,8 @@ exports.job = new nodeio.Job({
             var posts = $('tumblr post').map(mapJson(options, $));
             debug('fetched post count', posts.length);
 
+            // only comics
+            posts = _(posts).filter(function(o) { return _(o.tags).include('comics'); });
             async.filter(posts, filterExisting, doEachLimit.bind(this));
         });
     }
@@ -65,9 +66,9 @@ function saveDocument(post, next) {
 }
 
 function streamAttachment(post, next) {
-    debug('streamAttachment', post.image, post._id, post.rev);
+    debug('streamAttachment', post.images[0], post._id, post.rev);
 
-    var reader = request.get(post.image);
+    var reader = request.get(post.images[0]);
     var writer = db.attachment.insert(
         post._id, 'image.' + post.extension,
         null, 'image/' + post.extension,
@@ -86,10 +87,12 @@ function mapJson(options, $) {
     return function mapFn() {
         var $el = $(this);
 
+        function getTextFn() { return $(this).text(); }
+
         var id = options.name + '--' + $el.attr('id') ;
-        var img = $el.find('photo-url[max-width=1280]').text();
-        var tags = $el.find('tag').map(function() { return $(this).text(); });
-        var ext = path.extname(url.parse(img).pathname);
+        var img = $el.find('photo-url[max-width=1280]').map(getTextFn);
+        var tags = $el.find('tag').map(getTextFn);
+        var ext = path.extname(url.parse(img[0]).pathname);
 
         return {
             _id       : id,
@@ -101,7 +104,7 @@ function mapJson(options, $) {
             width     : $el.attr('width'),
             height    : $el.attr('height'),
             reblogKey : $el.attr('reblog-key'),
-            image     : img,
+            images    : img,
             extension : ext.replace(/^\./,''),
             tags      : tags
         };
