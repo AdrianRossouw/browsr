@@ -24,7 +24,7 @@ var options = {
 var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
 
 exports.job = new nodeio.Job({
-    input: _.range(2000, 3500, 100),
+    input: _.range(2000, 3500, 50),
     run: function (num) {
         var options = { start: num };
         _.defaults(options, defaults);
