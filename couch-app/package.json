@@ -5,7 +5,8 @@
   "main": "app.js",
   "dependencies": {
     "couchapp": "0.10.x",
-    "grunt-contrib-less": "~0.7.0"
+    "grunt-contrib-less": "~0.7.0",
+    "grunt-contrib-copy": "~0.4.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

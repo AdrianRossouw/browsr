@@ -27,6 +27,13 @@ module.exports = function (grunt) {
                 browser: true
             }
         },
+        copy: {
+            dist: {
+                expand: true, flatten: true, filter: 'isFile',
+                src: ['bower_components/bootstrap/dist/fonts/*'],
+                dest: 'attachments/fonts/'
+            }
+        },
         concat: {
             options: {
                 // define a string to put between each file in the concatenated output
@@ -100,6 +107,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-template');
     grunt.loadNpmTasks('grunt-couchapp');
 
@@ -107,6 +115,7 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'jshint',
         'concat',
+        'copy',
         'uglify',
         'cssmin',
         'template',
