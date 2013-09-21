@@ -5,24 +5,24 @@ angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll',
 function ctrlThumbs($scope, cornercouch, $modal, $log) {
     $scope.firstRecord = 5000;
 
+    $scope.selectedIndex = -1; // Whatever the default selected index is, use -1 for no selection
+    $scope.rows = [];
     $scope.server = cornercouch();
     $scope.tumblr = $scope.server.getDB($scope.dbName || 'tumblr');
     $scope.tumblr.queryAll({
         include_docs: true,
-        //descending:true,
-        limit: 100,
-        skip: $scope.firstRecord
-    });
+        descending:true,
+        limit: 100
+        //skip: $scope.firstRecord
+    }).then(appendRows);
 
-    $scope.selectedIndex = -1; // Whatever the default selected index is, use -1 for no selection
-
-    $scope.$watch('tumblr', function() {
+    function appendRows() {
+        $scope.rows = $scope.rows.concat($scope.tumblr.rows);
         $('#masonry-ctrl').masonry('layout');
-    });
+    }
 
-    $scope.moreThumbs = function() {
-        $scope.firstRecord += 100;
-    };
+    $scope.$watch($scope.tumblr, function() {
+    });
 
     $scope.select = function($index) {
         if ($scope.selectedIndex === $index) {
@@ -40,7 +40,6 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
 
     $(document).keydown($scope.handleKey);
     $scope.handleKey = function($event) {
-        debugger;
         $event.preventDefault();
         if (~$scope.selectedIndex) { return false; }
 
@@ -52,7 +51,7 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
     };
 
     $scope.prevClick = function() { $scope.tumblr.queryPrev(); };
-    $scope.nextClick = function() { $scope.tumblr.queryNext(); };
+    $scope.nextClick = function() { $scope.tumblr.queryNext().then(appendRows); };
 
     $scope.open = function () {
 

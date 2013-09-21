@@ -4,12 +4,15 @@ body { color: #333; margin-bottom: 70px;
 }
 
 .sizer {
-  width:33%;
+  width:20%;
 }
 
+#masonry-ctrl {
+  padding-bottom: 40px;
+}
 .masonry-brick {
   display: none;
-  width: 33%;
+  width: 20%;
 }
 
 .masonry-brick img {
