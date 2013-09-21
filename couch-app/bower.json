@@ -16,6 +16,9 @@
   ],
   "dependencies": {
     "CornerCouch": "*",
-    "angular-masonry": "~0.4.0"
+    "angular-masonry": "~0.4.0",
+    "bootstrap": "~3.0.0",
+    "angular-bootstrap": "~0.6.0",
+    "nginfinitescroll": "~1.0.0"
   }
 }

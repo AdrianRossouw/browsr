@@ -8,7 +8,8 @@
     }
   },
   "template": {
-    "title": "tumblr-browsr",
+    "title": "browsr",
+    "dbName": "tumblr",
     "subtitle": "ui for browsing tumblr photo blogs"
   }
 }

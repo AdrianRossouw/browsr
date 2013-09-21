@@ -1,17 +1,44 @@
-body { color: #333; padding: 1em; }
+body { color: #333; margin-bottom: 70px;
+ overflow-y: auto;
+ overflow-x: hidden;
+}
 
-            .masonry-brick {
-                display: none;
-            }
+.sizer {
+  width:33%;
+}
 
-            .masonry-brick img {
-                width: 300px;
-            }
-            .masonry-brick img.selected {
-                width: 100%;
-                max-width: 1280px;
-            }
+.masonry-brick {
+  display: none;
+  width: 33%;
+}
 
-            .masonry-brick.loaded {
-                display: block;
-            }
+.masonry-brick img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+img.selected {
+  width: 100%;
+  height: auto;
+}
+
+.masonry-brick.loaded {
+  display: block;
+}
+
+.modal {
+  display: block !important;
+
+}
+.modal-dialog {
+  left: auto !important;
+  right: auto !important;
+/*
+  width: auto !important;
+  max-width:100% !important;
+  */
+  padding:0!important;
+}
+.modal-title .label {
+  margin-left: 0.5em;
+}

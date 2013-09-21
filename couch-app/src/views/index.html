@@ -1,22 +1,18 @@
 <!doctype html>
-<html xmlns:ng="http://angularjs.org" ng-app='tumblr-browsr'>
+<html xmlns:ng="http://angularjs.org" ng-app='tumblr-browsr' ng-init="dbName='<%= dbName %>'">
     <head>
         <title><%= pkg_name %></title>
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
-    <body>
-        <h1 class='page-title'><%= title %><small><%= subtitle %></small></h1>
+    <body ng-keydown='handleKey($event)' ng-controller="ctrlThumbs">
+        <div infinite-scroll="nextClick()" infinite-scroll-distance="3"></div>
+        <ng-include src="'navbar.html'"> </ng-include>
         <div>
-            <div class='row' ng-controller="ctrlThumbs">
+            <div class='row'>
                 <div class='col-lg-12'>
-            <div masonry id='masonry-ctrl'>
-                <div class='masonry-brick' ng-repeat='brick in tumblr.rows'>
-                    <img ng-src="/tumblr/{{ brick.id }}/image.jpg" ng-class="{ 'selected': $index == selectedIndex }" ng-click="itemClicked($index, $event)">
+                    <ng-include src="'masonry.html'"> </ng-include>
                 </div>
             </div>
-        </div>
-        </div>
         </div>
 
 

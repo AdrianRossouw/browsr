@@ -1,5 +1,10 @@
 var config = require('./config.json'),
-fs = require('fs');
+    fs = require('fs'),
+    _ = require('underscore');
+
+if (fs.existsSync('./config.local.json')) {
+    config = require('./config.local.json');
+}
 
 function get_templates (source, target) {
     var files = fs.readdirSync(source),
@@ -13,7 +18,6 @@ function get_templates (source, target) {
 }
 
 module.exports = function (grunt) {
-
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -45,8 +49,10 @@ module.exports = function (grunt) {
                     "bower_components/imagesloaded/imagesloaded.js",
 
                     "bower_components/angular/angular.min.js",
+                    "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
+                    "bower_components/nginfinitescroll/build/ng-infinite-scroll.js",
 
                     //'attachments/js/bower.js',
                     'src/js/*.js'
@@ -66,7 +72,7 @@ module.exports = function (grunt) {
         cssmin: {
             minify: {
                 files: {
-                    'attachments/css/style.css': ['src/css/*.css']
+                    'attachments/css/style.css': ['bower_components/bootstrap/dist/css/bootstrap.css', 'src/css/*.css']
                 }
             }
         },

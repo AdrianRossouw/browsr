@@ -4,7 +4,8 @@
   "description": "ui for browsing tumblr photo blogs",
   "main": "app.js",
   "dependencies": {
-    "couchapp": "0.10.x"
+    "couchapp": "0.10.x",
+    "grunt-contrib-less": "~0.7.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
