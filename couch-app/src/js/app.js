@@ -33,12 +33,6 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
         }
     };
 
-    $scope.$watch('selectedIndex', function() {
-        if ($scope.selectedIndex !== -1) {
-            $scope.open($scope.selectedIndex);
-        }
-    });
-
     $(document).keydown($scope.handleKey);
     $scope.handleKey = function($event) {
         $event.preventDefault();
@@ -64,42 +58,5 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
         }
     };
 
-    $scope.open = function () {
-
-        var modalInstance = $modal.open({
-            templateUrl: 'modal.html',
-            controller: ModalInstanceCtrl,
-            resolve: {
-                tumblr: function () {
-                    return $scope.tumblr;
-                },
-                selectedIndex: function() {
-                    return $scope.selectedIndex;
-                }
-            }
-        });
-
-        modalInstance.result.then(function () {
-            $scope.selectedIndex = -1;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-
 }
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, tumblr, selectedIndex) {
-
-    $scope.tumblr = tumblr;
-    $scope.selectedIndex = selectedIndex;
-
-    $scope.selected = tumblr.getQueryDoc(selectedIndex);
-
-    $scope.ok = function () {
-        $modalInstance.close($scope.selectedIndex);
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-};

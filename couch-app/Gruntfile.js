@@ -71,12 +71,10 @@ module.exports = function (grunt) {
                     "bower_components/imagesloaded/imagesloaded.js",
 
                     "bower_components/angular/angular.min.js",
-                    "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
                     "bower_components/nginfinitescroll/build/ng-infinite-scroll.js",
 
-                    //'attachments/js/bower.js',
                     'src/js/*.js'
                 ],
                 // the location of the resulting JS file
