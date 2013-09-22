@@ -1,9 +1,29 @@
 /* jshint unused:false */
 
-angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll', 'ui.bootstrap']);
 
-function ctrlThumbs($scope, cornercouch, $modal, $log) {
-    $scope.firstRecord = 5000;
+
+
+angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll'])
+    .directive('magnificPopup', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                $(element).magnificPopup({
+                    type: 'image',
+                    delegate: 'span.magnific-open',
+                    verticalFit: false,
+                    gallery: {
+                        enabled: true
+                    }
+
+                });
+            }
+        };
+    });
+
+
+
+function ctrlThumbs($scope, cornercouch, $log) {
 
     $scope.appending = true;
     $scope.selectedIndex = -1; // Whatever the default selected index is, use -1 for no selection
@@ -22,7 +42,6 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
         include_docs: true,
         descending:true,
         limit: 200
-        //skip: $scope.firstRecord
     }).then(appendRows);
 
     $scope.select = function($index) {
@@ -33,25 +52,7 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
         }
     };
 
-    $(document).keydown($scope.handleKey);
-    $scope.handleKey = function($event) {
-        $event.preventDefault();
-        if (~$scope.selectedIndex) { return false; }
-
-        if ($event.keyCode === 37) {
-            $scope.selectedIndex--;
-        } else if ($event.keyCode === 39) {
-            $scope.selectedIndex++;
-        }
-    };
-
-    $scope.prevClick = function() {
-        if (!$scope.appending && $scope.tumblr.prevRows.length) {
-            $scope.appending = true;
-            $scope.tumblr.queryPrev().then(appendRows);
-        }
-    };
-    $scope.nextClick = function() {
+    $scope.loadNext = function() {
         if (!$scope.appending && $scope.tumblr.nextRow) {
             $scope.appending = true;
             $scope.tumblr.queryNext().then(appendRows);

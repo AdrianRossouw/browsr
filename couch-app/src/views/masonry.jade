@@ -1,4 +1,5 @@
-#masonry-ctrl(masonry='masonry')
+#masonry-ctrl(masonry, magnific-popup='magnific-popup', magnific-items='{{rows}}')
   .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
-    img(ng-src='/{{dbName}}/{{ brick.doc.images[1].path }}', ng-click='select($index)')
+    span.magnific-open(href='/{{dbName}}/{{brick.doc.images[0].path}}')
+      img(ng-src='/{{dbName}}/{{ brick.doc.images[1].path }}', ng-click='select($index)')
     .sizer.clearfix

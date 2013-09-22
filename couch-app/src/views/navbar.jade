@@ -2,13 +2,6 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   .navbar-header: a.navbar-brand(href='#')= title
   ul.nav.navbar-nav.navbar-right
     li(ng-show='appending')
-      span.glyphicon.glyphicon-cog
-        |  loading
-    li
-      button.btn.btn-default.btn-lg(ng-click='prevClick()', ng-show='tumblr.prevRows.length')
-        span.glyphicon.glyphicon-fastbackward
-        | previous
-    li
-      button.btn.btn-default.btn-lg(ng-click='nextClick()', ng-show='tumblr.nextRow')
-        span.glyphicon.glyphicon-fastforward
-        | next
+      a(href='#')
+        span.glyphicon.glyphicon-cog
+          |  loading

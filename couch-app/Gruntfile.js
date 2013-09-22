@@ -69,7 +69,7 @@ module.exports = function (grunt) {
                     "bower_components/outlayer/outlayer.js",
                     "bower_components/masonry/masonry.js",
                     "bower_components/imagesloaded/imagesloaded.js",
-
+                    "bower_components/magnific-popup/dist/jquery.magnific-popup.js",
                     "bower_components/angular/angular.min.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
@@ -92,7 +92,11 @@ module.exports = function (grunt) {
         cssmin: {
             minify: {
                 files: {
-                    'attachments/css/style.css': ['bower_components/bootstrap/dist/css/bootstrap.css', 'src/css/*.css']
+                    'attachments/css/style.css': [
+                        'bower_components/magnific-popup/dist/magnific-popup.css',
+                        'bower_components/bootstrap/dist/css/bootstrap.css',
+                        'src/css/*.css'
+                    ]
                 }
             }
         },
