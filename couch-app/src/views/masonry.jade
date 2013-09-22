@@ -1,0 +1,4 @@
+#masonry-ctrl(masonry='masonry')
+  .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
+    img(ng-src='/{{dbName}}/{{ brick.id }}/image.jpg', ng-click='select($index)')
+    .sizer.clearfix

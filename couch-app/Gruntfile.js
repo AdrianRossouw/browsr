@@ -1,6 +1,6 @@
 var config = require('./config.json'),
-    fs = require('fs'),
-    _ = require('underscore');
+fs = require('fs'),
+_ = require('underscore');
 
 if (fs.existsSync('./config.local.json')) {
     config = require('./config.local.json');
@@ -11,7 +11,7 @@ function get_templates (source, target) {
     template = {};
 
     files.forEach(function (file) {
-        template[target + file] = [source + file];
+        template[target + file.replace(/jade$/, 'html')] = [source + file];
     });
 
     return template;
@@ -23,8 +23,20 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
             files: ['src/js/app.js', 'app.js', 'Gruntfile.js'],
-            options: {
-                browser: true
+            options:{
+                curly:true,
+                eqeqeq:true,
+                immed:true,
+                newcap:true,
+                noarg:true,
+                sub:true,
+                boss:true,
+                browser: true,
+                eqnull:true
+            },
+            globals:{
+                angular: false
+
             }
         },
         copy: {
@@ -83,12 +95,20 @@ module.exports = function (grunt) {
                 }
             }
         },
-        template: {
+        jade: {
             html: {
                 options: {
                     data: config.template
                 },
-                files: get_templates('src/views/', 'attachments/')
+                files: [
+                    {
+                        expand: true,     // Enable dynamic expansion.
+                        flatten: true,
+                        src: ['src/views/*.jade'], // Actual pattern(s) to match.
+                        dest: 'attachments/',   // Destination path prefix.
+                        ext: '.html',   // Dest filepaths will have this extension.
+                    }
+                ]
             }
         },
         rmcouchdb: {
@@ -108,7 +128,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-template');
+    grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-couchapp');
 
     // Default task(s).
@@ -118,7 +138,7 @@ module.exports = function (grunt) {
         'copy',
         'uglify',
         'cssmin',
-        'template',
+        'jade',
         'mkcouchdb',
         'couchapp'
     ]);

@@ -1,0 +1,14 @@
+!!! 5
+html(xmlns:ng='http://angularjs.org', ng-app='tumblr-browsr', ng-init="dbName='#{dbName}'")
+  head
+    title= pkg_name
+    link(rel='stylesheet', type='text/css', href='css/style.css')
+
+  body(ng-controller='ctrlThumbs')
+    span(ng-include, src="'navbar.html'")
+
+    div.row(infinite-scroll='nextClick()', infinite-scroll-distance='0')
+      .col-lg-12
+        span(ng-include, src="'masonry.html'")
+
+  script(type='text/javascript', src='js/app.js')

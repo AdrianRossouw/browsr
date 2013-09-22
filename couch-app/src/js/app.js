@@ -9,17 +9,19 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
     $scope.rows = [];
     $scope.server = cornercouch();
     $scope.tumblr = $scope.server.getDB($scope.dbName || 'tumblr');
+
+
+    function appendRows() {
+        $scope.rows = $scope.rows.concat($scope.tumblr.rows);
+        $('#masonry-ctrl').masonry('layout');
+    }
+
     $scope.tumblr.queryAll({
         include_docs: true,
         descending:true,
         limit: 100
         //skip: $scope.firstRecord
     }).then(appendRows);
-
-    function appendRows() {
-        $scope.rows = $scope.rows.concat($scope.tumblr.rows);
-        $('#masonry-ctrl').masonry('layout');
-    }
 
     $scope.$watch($scope.tumblr, function() {
     });
@@ -33,7 +35,7 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
     };
 
     $scope.$watch('selectedIndex', function() {
-        if ($scope.selectedIndex != -1) {
+        if ($scope.selectedIndex !== -1) {
             $scope.open($scope.selectedIndex);
         }
     });
@@ -43,20 +45,20 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
         $event.preventDefault();
         if (~$scope.selectedIndex) { return false; }
 
-        if ($event.keyCode == 37) {
+        if ($event.keyCode === 37) {
             $scope.selectedIndex--;
-        } else if ($event.keyCode == 39) {
+        } else if ($event.keyCode === 39) {
             $scope.selectedIndex++;
         }
     };
 
     $scope.prevClick = function() { $scope.tumblr.queryPrev(); };
-    $scope.nextClick = function() { $scope.tumblr.queryNext().then(appendRows); };
+    $scope.nextClick = function() { $scope.tumblr.queryNext(); };
 
     $scope.open = function () {
 
         var modalInstance = $modal.open({
-            templateUrl: 'mymodal.html',
+            templateUrl: 'modal.html',
             controller: ModalInstanceCtrl,
             resolve: {
                 tumblr: function () {

@@ -1,0 +1,6 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      h4.modal-title {{selected.date}}
+        span.label.label-primary(ng-repeat='tag in selected.tags') {{tag}}
+      img.selected(width='{{selected.width}}', ng-src='/{{dbName}}/{{ selected.id }}/image.jpg')
