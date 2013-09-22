@@ -36,8 +36,8 @@ img.selected {
 .modal-dialog {
   left: auto !important;
   right: auto !important;
-/*
   width: auto !important;
+/*
   max-width:100% !important;
   */
   padding:0!important;

@@ -1,43 +1,30 @@
-var cheerio = require('cheerio');
-var nodeio  = require('node.io');
-var request = require('request');
-var debug   = require('debug')('tumblr:fetch.lists');
-var async   = require('async');
-var path    = require('path');
-var url     = require('url');
-var db      = require('nano')('http://localhost:5984/tumblr');
-var _       = require('underscore');
+var cheerio        = require('cheerio');
+var nodeio         = require('node.io');
+var request        = require('request');
+var debug          = require('debug')('tumblr:fetch.lists');
+var async          = require('async');
+var path           = require('path');
+var url            = require('url');
+var db             = require('nano')('http://localhost:5984/tumblr');
+var _              = require('underscore');
+var Input          = require('./lib/input').job;
 
 _.templateSettings = { interpolate: /\{\{(.+?)\}\}/g };
 
-var defaults = {
-    name: 'tof34',
-    count: 50,
-    start: 1
-};
 
-var options = {
-    timeout: 10,
-    max: 4,
-    retries: 3   
-};
-var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{count}}&start={{start}}');
+var tpl = _.template('http://{{name}}.tumblr.com/api/read?type=photo&num={{incr}}&start={{start}}');
 
-exports.job = new nodeio.Job({
-    input: _.range(1, 200, 50),
-    run: function (num) {
-        var options = { start: num };
-        _.defaults(options, defaults);
-        var url = tpl(options);
+exports.job = new Input.extend({
+    run: function (input) {
+        var url = tpl(input);
+        debug('input is ', input);
         this.get(url, function(err, data, headers) {
             if (err) { return this.fail(err); }
 
             var $ = cheerio.load(data);
-            var posts = $('tumblr post').map(mapJson(options, $));
+            var posts = $('tumblr post').map(mapJson(input, $));
             debug('fetched post count', posts.length);
 
-            // only comics
-            posts = _(posts).filter(function(o) { return _(o.tags).include('comics'); });
             async.filter(posts, filterExisting, doEachLimit.bind(this));
         });
     }
@@ -66,15 +53,26 @@ function saveDocument(post, next) {
 }
 
 function streamAttachment(post, next) {
-    debug('streamAttachment', post.images[0], post._id, post.rev);
 
-    var reader = request.get(post.images[0]);
-    var writer = db.attachment.insert(
-        post._id, 'image.' + post.extension,
-        null, 'image/' + post.extension,
-        { rev: post.rev }, next);
+    async.eachSeries(post.images, function(image, next) {
+        debug('streamAttachment', image.url, post._id, post.rev);
+        // create a stream to write the attachment to.
+        var writer = db.attachment.insert(
+            post._id, image.maxWidth+'/'+image.fileno, null,
+            image.mimetype, { rev: post.rev }, captureRev);
 
-    reader.pipe(writer);
+        // create a stream to pipe it from
+        var reader = request.get(image.url);
+        reader.pipe(writer);
+
+        // keep track of the last post revision
+        function captureRev(err, data) {
+            if (err) { return next(err); }
+
+            _.extend(post, data);
+            next(null, data.rev);
+        }
+    }, next);
 }
 
 function completed(err, result) {
@@ -83,31 +81,61 @@ function completed(err, result) {
     this.emit(result);
 }
 
-function mapJson(options, $) {
+function mapJson(input, $) {
     return function mapFn() {
         var $el = $(this);
-
-        function getTextFn() { return $(this).text(); }
-
-        var id = options.name + '--' + $el.attr('id') ;
-        var img = $el.find('photo-url[max-width=1280]').map(getTextFn);
+        var id = 'tumblr--' + input.name + '--' + $el.attr('id') ;
+        var img = _([1280, 500, 250]).reduce(imageForSize, []);
         var tags = $el.find('tag').map(getTextFn);
-        var ext = path.extname(url.parse(img[0]).pathname);
+        var imgcount = _(img).chain().pluck('fileno').max().value() + 1;
 
         return {
-            _id       : id,
-            id        : id,
-            url       : $el.attr('url'),
-            type      : 'photo',
-            date      : $el.attr('date-gmt'),
-            timestamp : $el.attr('unix-timestamp'),
-            width     : $el.attr('width'),
-            height    : $el.attr('height'),
-            reblogKey : $el.attr('reblog-key'),
-            images    : img,
-            extension : ext.replace(/^\./,''),
-            tags      : tags
+            _id          : id,
+            id           : id,
+            driver       : 'tumblr',
+            site         : input.name,
+            url          : $el.attr('url'),
+            type         : 'photo',
+            caption      : $el.find('photo-caption').text(),
+            date         : $el.attr('date-gmt'),
+            timestamp    : $el.attr('unix-timestamp'),
+            reblogKey    : $el.attr('reblog-key'),
+            images       : img,
+            images_count : imgcount,
+            tags         : tags
         };
+
+
+        function imageForSize(m, w) {
+            var selector = 'photo-url[max-width='+w+']';
+            var files    = $el.find(selector);
+            var images   = _(files).map(imageObj);
+
+            m = m.concat(images || []);
+            return m;
+
+            function imageObj(imgEl, i) {
+                var $imgEl   = $(imgEl);
+                var src      = $imgEl.text();
+                var width    = $imgEl.parent().attr('width');
+                var height   = $imgEl.parent().attr('height');
+                var pathname = url.parse(src).pathname;
+                var ext      = path.extname(pathname).replace(/^\./,'');
+
+                return {
+                    url      : src,
+                    fileno   : i,
+                    width    : parseInt(width, 10),
+                    height   : parseInt(height, 10),
+                    maxWidth : w,
+                    path     : id+'/'+w+'/'+i,
+                    mimetype : 'image/'+ext,
+                    ext      : ext
+                };
+            }
+        }
+
+        function getTextFn() { return $(this).text(); }
     };
 }
 

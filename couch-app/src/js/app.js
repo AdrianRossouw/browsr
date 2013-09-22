@@ -13,7 +13,7 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
 
 
     function appendRows() {
-     //   $scope.appending = false;
+        $scope.appending = false;
         $scope.rows = $scope.rows.concat($scope.tumblr.rows);
         $('#masonry-ctrl').masonry('layout');
     }
@@ -52,13 +52,13 @@ function ctrlThumbs($scope, cornercouch, $modal, $log) {
     };
 
     $scope.prevClick = function() {
-        if (!$scope.appending) {
+        if (!$scope.appending && $scope.tumblr.prevRows.length) {
             $scope.appending = true;
             $scope.tumblr.queryPrev().then(appendRows);
         }
     };
     $scope.nextClick = function() {
-        if (!$scope.appending) {
+        if (!$scope.appending && $scope.tumblr.nextRow) {
             $scope.appending = true;
             $scope.tumblr.queryNext().then(appendRows);
         }

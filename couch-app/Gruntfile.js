@@ -2,20 +2,7 @@ var config = require('./config.json'),
 fs = require('fs'),
 _ = require('underscore');
 
-if (fs.existsSync('./config.local.json')) {
-    config = require('./config.local.json');
-}
 
-function get_templates (source, target) {
-    var files = fs.readdirSync(source),
-    template = {};
-
-    files.forEach(function (file) {
-        template[target + file.replace(/jade$/, 'html')] = [source + file];
-    });
-
-    return template;
-}
 
 module.exports = function (grunt) {
     grunt.option('color', false);
@@ -63,6 +50,7 @@ module.exports = function (grunt) {
             dist: {
                 // the files to concatenate, in order
                 src: [
+                    "bower_components/underscore/underscore.js",
                     "bower_components/jquery/jquery.js",
                     "bower_components/jquery-bridget/jquery.bridget.js",
                     "bower_components/get-style-property/get-style-property.js",
