@@ -6,6 +6,12 @@ _ = require('underscore');
 
 module.exports = function (grunt) {
     grunt.option('color', false);
+
+    var override = grunt.option('config');
+    if (override && grunt.file.exists(override)) {
+        config = grunt.file.readJSON(override);
+    }
+
     // Project configuration.
     grunt.initConfig({
         watch: {
