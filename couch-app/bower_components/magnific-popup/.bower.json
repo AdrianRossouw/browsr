@@ -1,0 +1,28 @@
+{
+  "name": "magnific-popup",
+  "version": "0.9.5",
+  "main": [
+    "dist/jquery.magnific-popup.js",
+    "dist/magnific-popup.css"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.0"
+  },
+  "ignore": [
+    "node_modules/",
+    "components/",
+    "website/",
+    "libs/"
+  ],
+  "homepage": "https://github.com/dimsemenov/Magnific-Popup",
+  "_release": "0.9.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.9.5",
+    "commit": "d1b4d9a34b0d1f67c60ecd328a2a4e814fc5df9e"
+  },
+  "_source": "git://github.com/dimsemenov/Magnific-Popup.git",
+  "_target": "~0.9.5",
+  "_originalSource": "magnific-popup",
+  "_direct": true
+}
