@@ -1,5 +1,5 @@
 <div masonry id='masonry-ctrl'>
-    <div ng-style='{"max-width": brick.doc.width+"px",  "max-height": brick.doc.height+"px" }' id='{{ brick.id }}' class='masonry-brick' ng-repeat='brick in rows' >
+    <div  id='{{ brick.id }}' class='masonry-brick' ng-repeat='brick in rows' >
         <img ng-src="/{{dbName}}/{{ brick.id }}/image.jpg" ng-click="select($index)">
     </div>
 
