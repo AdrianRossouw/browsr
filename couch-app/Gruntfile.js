@@ -18,8 +18,7 @@ module.exports = function (grunt) {
             all: {
                 files: ['src/js/*.js', 'src/views/*.jade', 'src/css/*.css'],
                 tasks: ['default'],
-                options: {'beep' : false }
-
+                options: {livereload: true}
             }
         },
         pkg: grunt.file.readJSON('package.json'),
@@ -71,8 +70,11 @@ module.exports = function (grunt) {
                     "bower_components/imagesloaded/imagesloaded.js",
                     "bower_components/magnific-popup/dist/jquery.magnific-popup.js",
                     "bower_components/angular/angular.min.js",
+                    "bower_components/angular-route/angular-route.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
+                    "bower_components/elastic.js/dist/elastic.js",
+                    "bower_components/elastic.js/dist/elastic-angular-client.js",
                     "bower_components/nginfinitescroll/build/ng-infinite-scroll.js",
 
                     'src/js/*.js'

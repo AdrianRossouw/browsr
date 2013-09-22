@@ -1,5 +1,10 @@
-#masonry-ctrl(masonry, magnific-popup='magnific-popup', magnific-items='{{rows}}')
+#masonry-ctrl(masonry,
+  magnific-popup='magnific-popup',
+  images-loaded='{{rows}}',
+  images-loaded-busy='{{appending}}',
+  masonry-options='{transitionDuration: 0}')
+
   .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
-    span.magnific-open(href='/{{dbName}}/{{brick.doc.images[0].path}}')
-      img(ng-src='/{{dbName}}/{{ brick.doc.images[1].path }}', ng-click='select($index)')
+    a(title='{{brick.site}}: {{brick.date}}', href='/{{dbName}}/{{ brick.images[0].path }}')
+      img(ng-src='/{{dbName}}/{{ brick.images[1].path }}')
     .sizer.clearfix

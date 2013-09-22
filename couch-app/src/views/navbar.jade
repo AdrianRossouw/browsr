@@ -1,5 +1,11 @@
 nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   .navbar-header: a.navbar-brand(href='#')= title
+
+  form.navbar-form.navbar-left(role='search')
+    .form-group
+        input.form-control(type='text', placeholder='Search')
+      button.btn.btn-default(type='submit') Submit
+  
   ul.nav.navbar-nav.navbar-right
     li(ng-show='appending')
       a(href='#')
