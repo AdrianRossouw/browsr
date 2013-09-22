@@ -18,8 +18,17 @@ function get_templates (source, target) {
 }
 
 module.exports = function (grunt) {
+    grunt.option('color', false);
     // Project configuration.
     grunt.initConfig({
+        watch: {
+            all: {
+                files: ['src/js/*.js', 'src/views/*.jade', 'src/css/*.css'],
+                tasks: ['default'],
+                options: {'beep' : false }
+
+            }
+        },
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
             files: ['src/js/app.js', 'app.js', 'Gruntfile.js'],
@@ -129,6 +138,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jade');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-couchapp');
 
     // Default task(s).

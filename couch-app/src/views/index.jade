@@ -7,7 +7,7 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblr-browsr', ng-init="dbName='#
   body(ng-controller='ctrlThumbs')
     span(ng-include, src="'navbar.html'")
 
-    div.row(infinite-scroll='nextClick()', infinite-scroll-distance='0')
+    div.row(infinite-scroll='nextClick()', infinite-scroll-distance='1')
       .col-lg-12
         span(ng-include, src="'masonry.html'")
 
