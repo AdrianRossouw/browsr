@@ -35,8 +35,11 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $locat
     $scope.start     = 1;
     $scope.server    = cornercouch();
     $scope.tumblr    = $scope.server.getDB($scope.dbName || 'tumblr');
-    $scope.root      = document.location.pathname;
+    $scope.root      = '/';
 
+    if ((/.*\/_design\/.*/).test(document.location)) {
+        $scope.root = document.location;
+    }
     $scope.query = ejs.Request()
         .indices("pvt2")
         .size(100)

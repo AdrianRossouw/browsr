@@ -3,12 +3,21 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   p.navbar-text
     a(ng-click='startHere()')
       span.glyphicon.glyphicon-save
+  ul.nav.navbar-nav
+    li.dropdown.dropup(ng-repeat='(facetName, facet) in facets')
+      a.dropdown-toggle(href='#', data-toggle='dropdown')
+        | {{facetName}}
+        b.caret
+      ul.dropdown-menu
+        li(ng-repeat='term in facet.terms')
+          a(ng-click='toggleFacet(facetName, term.term)') {{term.term}}
  
-  p.navbar-text.pull-left(ng-show='appending')
+  p.navbar-text(ng-show='appending')
     span.glyphicon.glyphicon-cog
       |  loading
   p.navbar-text.pull-left(ng-show='!appending')
     | showing {{start}} to {{start + rows.length - 1}} of {{total}} posts
+
   form.navbar-form.navbar-right(role='search')
     .form-group
         input.form-control(ng-model='qs', type='text', placeholder='Search')
