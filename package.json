@@ -20,6 +20,7 @@
     "grunt-contrib-copy": "~0.4.1",
     "passport": "~0.1.17",
     "passport-tumblr": "~0.1.2",
-    "express": "~3.4.0"
+    "express": "~3.4.0",
+    "http-proxy": "~0.10.3"
   }
 }

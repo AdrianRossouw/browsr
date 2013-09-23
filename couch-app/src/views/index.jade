@@ -6,11 +6,10 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblr-browsr', ng-init="dbName='#
     base(href='{{root}}')
 
   body(ng-controller='ctrlThumbs')
-    span(ng-include, src="'navbar.html'")
+    span(ng-include, src="'views/navbar.html'")
 
     div.row(infinite-scroll='loadNext()', infinite-scroll-distance='2')
       .col-lg-12
-        span(ng-include, src="'masonry.html'")
+        span(ng-include, src="'views/masonry.html'")
 
   script(type='text/javascript', src='js/app.js')
-  script(src="http://localhost:35729/livereload.js")

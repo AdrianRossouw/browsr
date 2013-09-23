@@ -110,10 +110,14 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
+                        src: ['src/views/index.jade'],
+                        dest: 'attachments/index.html'
+                    },
+                    {
                         expand: true,     // Enable dynamic expansion.
                         flatten: true,
                         src: ['src/views/*.jade'], // Actual pattern(s) to match.
-                        dest: 'attachments/',   // Destination path prefix.
+                        dest: 'attachments/views/',   // Destination path prefix.
                         ext: '.html',   // Dest filepaths will have this extension.
                     }
                 ]
