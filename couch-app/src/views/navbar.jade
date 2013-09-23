@@ -3,8 +3,8 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
 
   form.navbar-form.navbar-left(role='search')
     .form-group
-        input.form-control(type='text', placeholder='Search')
-      button.btn.btn-default(type='submit') Submit
+        input.form-control(ng-model='qs', type='text', placeholder='Search')
+      button.btn.btn-default(ng-click='search(qs)', type='submit') Submit
   
   ul.nav.navbar-nav.navbar-right
     li(ng-show='appending')

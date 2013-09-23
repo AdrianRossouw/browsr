@@ -17,6 +17,9 @@
     "debug": "~0.7.2",
     "request": "~2.27.0",
     "grunt": "~0.4.1",
-    "grunt-contrib-copy": "~0.4.1"
+    "grunt-contrib-copy": "~0.4.1",
+    "passport": "~0.1.17",
+    "passport-tumblr": "~0.1.2",
+    "express": "~3.4.0"
   }
 }
