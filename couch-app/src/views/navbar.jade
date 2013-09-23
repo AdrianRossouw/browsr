@@ -1,13 +1,16 @@
 nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   .navbar-header: a.navbar-brand(href='#')= title
-
-  form.navbar-form.navbar-left(role='search')
+  p.navbar-text
+    a(ng-click='startHere()')
+      span.glyphicon.glyphicon-save
+ 
+  p.navbar-text.pull-left(ng-show='appending')
+    span.glyphicon.glyphicon-cog
+      |  loading
+  p.navbar-text.pull-left(ng-show='!appending')
+    | showing {{start}} to {{start + rows.length - 1}} of {{total}} posts
+  form.navbar-form.navbar-right(role='search')
     .form-group
         input.form-control(ng-model='qs', type='text', placeholder='Search')
       button.btn.btn-default(ng-click='search(qs)', type='submit') Submit
-  
-  ul.nav.navbar-nav.navbar-right
-    li(ng-show='appending')
-      a(href='#')
-        span.glyphicon.glyphicon-cog
-          |  loading
+

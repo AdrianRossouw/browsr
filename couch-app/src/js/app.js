@@ -25,16 +25,17 @@ angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll',
         };
     });
 
-function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource) {
+function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $location) {
     var ejs          = ejsResource('http://localhost:9200');
 
     $scope.searchNoHits = false;
     $scope.qs        = '';
     $scope.appending = true;
     $scope.rows      = [];
-    $scope.start     = 0;
+    $scope.start     = 1;
     $scope.server    = cornercouch();
     $scope.tumblr    = $scope.server.getDB($scope.dbName || 'tumblr');
+    $scope.root      = document.location.pathname;
 
     $scope.query = ejs.Request()
         .indices("pvt2")
@@ -49,16 +50,19 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource) {
     allQuery();
 
     function allQuery() {
-        $scope.query
-            .query(ejs.MatchAllQuery())
-            .doSearch()
+        $scope.query = $scope.query
+            .query(ejs.MatchAllQuery());
+
+        $scope.query.doSearch()
             .then(appendRows);
     }
 
     $scope.facets = {};
 
     function appendRows(results) {
-        if (result.hits.total) {
+        if (results.hits.total) {
+            $scope.total = results.hits.total;
+            $scope.searchNoHits = false;
             $scope.facets = results.facets;
             var newRows = _(results.hits.hits || []).pluck('_source');
             $scope.rows = $scope.rows.concat(newRows);
@@ -75,25 +79,34 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource) {
         if (qs.length) {
             $scope.qs = angular.copy(qs);
             $scope.rows = [];
-            $scope.query = $scope.query.query(ejs.QueryStringQuery($scope.qs));
 
+            $scope.query = $scope.query.query(ejs.QueryStringQuery($scope.qs));
             $scope.query.doSearch()
-            .then(appendRows);
+                .then(appendRows);
         }
+    };
+
+    $scope.startHere = function() {
+        $scope.start = $scope.start + $scope.rows.length - 100;
+        $scope.appending = false;
+        $scope.rows = [];
+
+        $scope.loadNext();
     };
 
     $scope.loadNext = function() {
         if (!$scope.appending) {
             $scope.appending = true;
-            var cnt = $scope.rows.length - 1; 
-            $scope.query.from(cnt)
-                .doSearch()
+            var from = $scope.start + $scope.rows.length; 
+            $scope.query = $scope.query.from(from);
+
+            $scope.query.doSearch()
                 .then(appendRows);
         }
     };
 }
 
-//ctrlThumbs.$inject = ['$scope', '$routeParams'];
+//ctrlThumbs.$inject = ['$scope', '$routeParams', '$location'];
 
 function magnificPopupLink(scope, element, attrs) {
     scope.$watch('rows', function() {
@@ -110,7 +123,7 @@ function magnificPopupLink(scope, element, attrs) {
 }
 
 function imagesLoadedLink(scope, element, attrs) {
-    attrs.$observe('imagesLoaded', function() {
+    scope.$watch('rows', function() {
         imagesLoaded(element, function() {
             $(element).masonry('layout');
         });

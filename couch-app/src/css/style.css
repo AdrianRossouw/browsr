@@ -1,6 +1,8 @@
-body { color: #333; margin-bottom: 70px;
+body { color: #333;
+ margin-bottom: 70px;
  overflow-y: auto;
  overflow-x: hidden;
+ min-height: 800px;
 }
 
 .sizer {
@@ -29,19 +31,4 @@ img.selected {
   display: block;
 }
 
-.modal {
-  display: block !important;
 
-}
-.modal-dialog {
-  left: auto !important;
-  right: auto !important;
-  width: auto !important;
-/*
-  max-width:100% !important;
-  */
-  padding:0!important;
-}
-.modal-title .label {
-  margin-left: 0.5em;
-}

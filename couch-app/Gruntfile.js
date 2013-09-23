@@ -71,6 +71,7 @@ module.exports = function (grunt) {
                     "bower_components/magnific-popup/dist/jquery.magnific-popup.js",
                     "bower_components/angular/angular.min.js",
                     "bower_components/angular-route/angular-route.js",
+                    "bower_components/angular-bootstrap/ui-bootstrap.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
                     "bower_components/elastic.js/dist/elastic.js",

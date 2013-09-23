@@ -3,6 +3,7 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblr-browsr', ng-init="dbName='#
   head
     title= pkg_name
     link(rel='stylesheet', type='text/css', href='css/style.css')
+    base(href='{{root}}')
 
   body(ng-controller='ctrlThumbs')
     span(ng-include, src="'navbar.html'")

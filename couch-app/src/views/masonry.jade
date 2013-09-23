@@ -1,10 +1,9 @@
 #masonry-ctrl(masonry,
+  images-loaded,
   magnific-popup='magnific-popup',
-  images-loaded='{{rows}}',
-  images-loaded-busy='{{appending}}',
   masonry-options='{transitionDuration: 0}')
 
   .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
-    a(title='{{brick.site}}: {{brick.date}}', href='/{{dbName}}/{{ brick.images[0].path }}')
-      img(ng-src='/{{dbName}}/{{ brick.images[1].path }}')
+    a(title='{{brick.site}}: {{brick.date}}', href='api/{{ brick.images[0].path }}')
+      img(ng-src='api/{{ brick.images[1].path }}')
     .sizer.clearfix
