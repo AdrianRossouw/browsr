@@ -82,6 +82,7 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $locat
         if (qs.length) {
             $scope.qs = angular.copy(qs);
             $scope.rows = [];
+            $scope.start = 0;
 
             $scope.query = $scope.query.query(ejs.QueryStringQuery($scope.qs));
             $scope.query.doSearch()
@@ -115,7 +116,7 @@ function magnificPopupLink(scope, element, attrs) {
     scope.$watch('rows', function() {
         $(element).magnificPopup({
             type: 'image',
-            verticalFit: false,
+            verticalFit: true,
             delegate: 'a',
             preload: [1,2],
             gallery: {
