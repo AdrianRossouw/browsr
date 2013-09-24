@@ -62,7 +62,7 @@ function streamAttachment(post, next) {
             image.mimetype, { rev: post.rev }, captureRev);
 
         // create a stream to pipe it from
-        var reader = request.get(image.url);
+        var reader = request.get(image.url, captureError);
         reader.pipe(writer);
 
         // keep track of the last post revision
@@ -70,8 +70,16 @@ function streamAttachment(post, next) {
             if (err) { return next(err); }
 
             _.extend(post, data);
-            next(null, data.rev);
+
+            _.delay(next, 2000, null, data.rev);
         }
+
+        function captureError(err, resp, body) {
+            if (err) {
+                next(err);
+            }
+        }
+
     }, next);
 }
 
@@ -85,7 +93,7 @@ function mapJson(input, $) {
     return function mapFn() {
         var $el = $(this);
         var id = 'tumblr--' + input.name + '--' + $el.attr('id') ;
-        var img = _([1280, 500, 250]).reduce(imageForSize, []);
+        var img = _([1280, 500]).reduce(imageForSize, []);
         var tags = $el.find('tag').map(getTextFn);
         var imgcount = _(img).chain().pluck('fileno').max().value() + 1;
 

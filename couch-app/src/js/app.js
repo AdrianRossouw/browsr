@@ -129,8 +129,14 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     }
 
+    $scope.resetAll = function() {
+        $scope.filters = [];
+        $cookies.filters = $scope.filters;
+        $cookieStore.put('filters', $scope.filters);
+        setStart(1);
+        updateSearch();
+    };
 
-   
     function appendRows(results) {
         if (results.hits.total) {
             $scope.total = results.hits.total;
@@ -246,7 +252,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
                 index = fuckingGlobal;
             }
 
-            console.log(index);
             if (index) { toggleFavorite(index); }
         }
     };
