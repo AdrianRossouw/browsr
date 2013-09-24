@@ -27,8 +27,8 @@ body { color: #333;
 }
 
 @media (min-width: 1200px) { 
-  .sizer {width:20%;}
-  .masonry-brick { width: 20%; }
+  .sizer {width:25%;}
+  .masonry-brick { width: 25%; }
 
 }
 
@@ -38,8 +38,8 @@ body { color: #333;
   max-width: 100%;
 }
 
-img.favorite {
-  border:1px solid green;
+.favorite {
+  border:2px solid lightgreen;
 }
 
 img.selected {

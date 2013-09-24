@@ -38,18 +38,18 @@ function ctrlThumbs($scope) {
 function ctrlMain( $scope, cornercouch, $routeParams,
     ejsResource, $location, $cookies,  $cookieStore) {
 
-    var ejs          = ejsResource('/search');
+    var ejs             = ejsResource('/search');
 
     $scope.searchNoHits = false;
-    $scope.qs        = '';
-    $scope.appending = true;
-    $scope.rows      = [];
-
-    $scope.start     = 1;
-    $scope.server    = cornercouch();
-    $scope.db        = $scope.server.getDB('api');
-    $scope.root      = '/';
-    $scope.selected  = null;
+    $scope.qs           = '';
+    $scope.appending    = true;
+    $scope.rows         = [];
+    $scope.facets       = {};
+    $scope.start        = 1;
+    $scope.server       = cornercouch();
+    $scope.db           = $scope.server.getDB('api');
+    $scope.root         = '/';
+    $scope.selected     = null;
 
     if ((/.*\/_design\/.*/).test(document.location)) {
         $scope.root = document.location;
@@ -70,7 +70,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         .indices("pvt2")
         .size(100)
         .facet(termFacets.site)
-        .facet(termFacets.tags);
+        .facet(termFacets.tags)
+        .sort(ejs.Sort('date').desc());
 
     allQuery();
 
@@ -109,7 +110,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         function mapFilters(filter) {
             return {
                 filter: ejs.TermFilter(filter.facet, filter.value),
-                priority: filter.priority || 'should'
+                priority: filter.priority || 'must'
             };
         }
     }
@@ -121,42 +122,30 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     }
 
-    $scope.facets = {};
 
-    
-    function toggleFavorite(index) {
-        if (!index) { return false; }
-
-        var newState = !$scope.rows[index].favorite;
-        $scope.rows[index].favorite = newState;
-
-        var id = $scope.rows[index].id;
-        var doc = $scope.db.newDoc();
-
-        doc.load(id).then(function(data) {
-            doc.favorite = newState;
-            doc.save();
-        }, function(err) {
-            console.log('error', err);
-        });
-
-
-    }
-
+   
     function appendRows(results) {
         if (results.hits.total) {
             $scope.total = results.hits.total;
             $scope.searchNoHits = false;
             $scope.facets = results.facets;
-            var newRows = _(results.hits.hits || []).pluck('_source');
+            var newRows = _(results.hits.hits || []).chain()
+                .pluck('_source')
+                .map(imageMapFn)
+                .value();
             $scope.rows = $scope.rows.concat(newRows);
-            setTimeout(function() {
-                $scope.appending = false;
-            }, 1000);
         } else {
             $scope.searchNoHits = true;
         }
 
+        $scope.appending = false;
+        function imageMapFn(obj) {
+            obj.images = _(obj.images).chain()
+                .map(function(img) { img.id = obj._id; return img; })
+                .groupBy('maxWidth')
+                .value();
+            return obj;
+        }
     }
 
     $scope.search = function(qs) {
@@ -211,6 +200,24 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         var obj = {facet: facet, value: value};
         return !!_($scope.filters).findWhere(obj);
     };
+ 
+    function toggleFavorite(id) {
+        if (!id) { return false; }
+
+        var where = _($scope.rows).findWhere({id: id});
+
+        var newState = !where.favorite;
+        where.favorite = newState;
+
+        var doc = $scope.db.newDoc();
+
+        doc.load(id).then(function(data) {
+            doc.favorite = newState;
+            doc.save();
+        }, function(err) {
+            console.log('error', err);
+        });
+    }
 
     $scope.mouseDown = function($event) {
         if ($event.which === 3) {
@@ -219,11 +226,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             var index = false;
 
             if (fuckingGlobal === null) {
-                index = parseInt($($event.target).attr('data-index'), 10);
+                index = $($event.target).attr('data-index');
             } else {
                 index = fuckingGlobal;
             }
 
+            console.log(index);
             if (index) { toggleFavorite(index); }
         }
     };
@@ -250,10 +258,10 @@ function magnificPopupLink(scope, element, attrs) {
             },
             callbacks: {
                 open: function() {
-                    fuckingGlobal = this.index;
+                    fuckingGlobal = this.st.el.find('img').attr('data-index');
                 },
                 change: function() {
-                    fuckingGlobal = this.index;
+                    fuckingGlobal = this.st.el.find('img').attr('data-index');
                 },
                 close: function() {
                     fuckingGlobal = null;

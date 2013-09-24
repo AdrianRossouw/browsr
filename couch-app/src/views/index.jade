@@ -9,7 +9,7 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
       
   body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'",
     ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)')
-
+    a(id='top')
     span(ng-include, src="'views/navbar.html'")
 
     .row(infinite-scroll='loadNext()', infinite-scroll-distance='2')

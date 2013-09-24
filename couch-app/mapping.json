@@ -1,9 +1,9 @@
 {
     "mappings": {
-        "colleges": {
+        "tumblr": {
             "properties": {
                 "site": {"type": "string", "index": "not_analyzed"},
-                "date": {"type": "date"},
+                "date": {"type": "date", "format":"YYYY-MM-dd HH:mm:ss z"},
                 "favorite": {"type": "boolean"},
                 "timestamp": {"type": "integer"},
                 "images": {
