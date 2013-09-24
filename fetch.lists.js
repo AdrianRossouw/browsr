@@ -5,7 +5,7 @@ var debug          = require('debug')('tumblr:fetch.lists');
 var async          = require('async');
 var path           = require('path');
 var url            = require('url');
-var db             = require('nano')('http://localhost:5984/tumblr');
+var db             = require('nano')('http://localhost:5984/browsr');
 var _              = require('underscore');
 var Input          = require('./lib/input').job;
 
