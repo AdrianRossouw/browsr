@@ -20,12 +20,10 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   p.navbar-text(ng-show='appending')
     span.glyphicon.glyphicon-cog
       |  loading
-  p.navbar-text.pull-left(ng-show='!appending')
-    | showing {{start}} to {{start + rows.length - 1}} of {{total}} posts
-
   
   form.navbar-form.navbar-right(role='search')
     .form-group
         input.form-control(ng-model='qs', type='text', placeholder='Search')
       button.btn.btn-default(ng-click='search(qs)', type='submit') Submit
-
+  p.navbar-text.pull-right(ng-show='!appending')
+    | {{start}} - {{start + rows.length - 1}} / {{total}}

@@ -45,7 +45,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.appending    = true;
     $scope.rows         = [];
     $scope.facets       = {};
-    $scope.start        = 1;
+    $scope.start        = $cookieStore.get('start') || 1;
     $scope.server       = cornercouch();
     $scope.db           = $scope.server.getDB('api');
     $scope.root         = '/';
@@ -63,14 +63,19 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             .size(20),
         tags: ejs.TermsFacet('tags')
             .field('tags')
-            .size(20)
+            .size(20),
+        date: ejs.DateHistogramFacet('date')
+            .keyField('date')
+            .interval('month')
     };
 
     $scope.query = ejs.Request()
         .indices("pvt2")
         .size(100)
+        .from($scope.start)
         .facet(termFacets.site)
         .facet(termFacets.tags)
+        //.facet(termFacets.date)
         .sort(ejs.Sort('date').desc());
 
     allQuery();
@@ -78,6 +83,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     updateSearch();
 
     function updateSearch() {
+        $(document).scrollTop(0);
+
         var filter = ejs.BoolFilter();
 
         var mapped = _($scope.filters).map(mapFilters);
@@ -93,11 +100,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
 
         $scope.rows = [];
-        $scope.start = 1;
         $scope.appending = true;
 
         termFacets.site.facetFilter(filter);
         termFacets.tags.facetFilter(filter);
+        //termFacets.date.facetFilter(filter);
         $scope.query = $scope.query.filter(filter);
 
         $scope.query.doSearch().then(appendRows);
@@ -139,6 +146,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
 
         $scope.appending = false;
+
         function imageMapFn(obj) {
             obj.images = _(obj.images).chain()
                 .map(function(img) { img.id = obj._id; return img; })
@@ -152,7 +160,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         if (qs.length) {
             $scope.qs = angular.copy(qs);
             $scope.rows = [];
-            $scope.start = 0;
+            setStart(0);
 
             $scope.query = $scope.query.query(ejs.QueryStringQuery($scope.qs));
             $scope.query.doSearch()
@@ -160,11 +168,17 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
     };
 
+    function setStart(start) {
+        $scope.start = start;
+        $cookieStore.put('start', start);
+    }
+
     $scope.startHere = function() {
-        $scope.start = $scope.start + $scope.rows.length - 100;
+        setStart($scope.start + $scope.rows.length - 100);
         $scope.appending = false;
         $scope.rows = [];
 
+        $(document).scrollTop(0);
         $scope.loadNext();
     };
 
@@ -193,6 +207,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
         $cookies.filters = $scope.filters;
         $cookieStore.put('filters', $scope.filters);
+        setStart(1);
         updateSearch();
     };
 
