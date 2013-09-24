@@ -13,8 +13,7 @@
                         "fileno": {"type": "integer"},
                         "maxWidth": {"type": "integer"}
                     }
-                },
-                "tags": {"type": "string", "index_name": "tag"}
+                }
             }
         }
     }

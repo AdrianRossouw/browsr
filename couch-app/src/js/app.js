@@ -215,7 +215,16 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.mouseDown = function($event) {
         if ($event.which === 3) {
             $event.preventDefault();
-            toggleFavorite(fuckingGlobal);
+
+            var index = false;
+
+            if (fuckingGlobal === null) {
+                index = parseInt($($event.target).attr('data-index'), 10);
+            } else {
+                index = fuckingGlobal;
+            }
+
+            if (index) { toggleFavorite(index); }
         }
     };
     $scope.keyDown = function($event) {

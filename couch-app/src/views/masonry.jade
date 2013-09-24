@@ -5,5 +5,5 @@
 
   .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
     a(title='{{brick.site}}: {{brick.date}}', href='api/{{ brick.images[0].path }}')
-      img(ng-class='{favorite: brick.favorite}', ng-src='api/{{ brick.images[1].path }}')
+      img(data-index='{{$index}}', ng-class='{favorite: brick.favorite}', ng-src='api/{{ brick.images[1].path }}')
     .sizer.clearfix
