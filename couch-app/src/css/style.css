@@ -16,6 +16,9 @@ body { color: #333;
   width:50%;
 }
 
+.dropdown-menu {
+  min-width: 260px;
+}
 
 @media (min-width: 992px) { 
   .sizer {width:25%;}

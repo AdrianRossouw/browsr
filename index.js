@@ -6,6 +6,10 @@ var request = require('request');
 var _       = require('underscore');
 var app     = express();
 
+//app.use(express.urlencoded());
+//app.use(express.json());
+
+
 var couchUrl = {
     "protocol"   : "http:",
     "port"       : "5984",

@@ -1,12 +1,15 @@
 !!! 5
 html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
   head
-    title= pkg_name
+    title= browsr 
     link(rel='stylesheet', type='text/css', href='css/style.css')
     base(href='{{root}}')
+    meta(charset="utf-8")
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
       
-  body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'", ng-keydown='keyDown($event)')
+  body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'",
+    ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)')
+
     span(ng-include, src="'views/navbar.html'")
 
     .row(infinite-scroll='loadNext()', infinite-scroll-distance='2')

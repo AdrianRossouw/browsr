@@ -4,6 +4,8 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
     a(ng-click='startHere()')
       span.glyphicon.glyphicon-save
   ul.nav.navbar-nav
+    li(ng-class="isFilter('favorite', true) ? 'active' : ''")
+      a(ng-click="toggleFilter('favorite', true, 'must')") liked
     li.dropdown.dropup(ng-repeat='(facetName, facet) in facets')
       a.dropdown-toggle(href='#', data-toggle='dropdown')
         | {{facetName}}
@@ -21,6 +23,7 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   p.navbar-text.pull-left(ng-show='!appending')
     | showing {{start}} to {{start + rows.length - 1}} of {{total}} posts
 
+  
   form.navbar-form.navbar-right(role='search')
     .form-group
         input.form-control(ng-model='qs', type='text', placeholder='Search')
