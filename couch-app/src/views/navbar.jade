@@ -8,9 +8,12 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
       a.dropdown-toggle(href='#', data-toggle='dropdown')
         | {{facetName}}
         b.caret
-      ul.dropdown-menu
-        li(ng-repeat='term in facet.terms')
-          a(ng-click='toggleFacet(facetName, term.term)') {{term.term}}
+      ul.dropdown-menu(role='menu')
+        li(ng-class="isFilter(facetName, term.term) ? 'active' : ''",
+          ng-repeat='term in facet.terms')
+          a(ng-click='toggleFilter(facetName, term.term)')
+            | {{term.term}}
+            span.pull-right.badge {{term.count}}
  
   p.navbar-text(ng-show='appending')
     span.glyphicon.glyphicon-cog

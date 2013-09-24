@@ -52,7 +52,7 @@ module.exports = function (grunt) {
                 // define a string to put between each file in the concatenated output
                 separator: ';'
             },
-            dist: {
+            vendor: {
                 // the files to concatenate, in order
                 src: [
                     "bower_components/underscore/underscore.js",
@@ -71,17 +71,19 @@ module.exports = function (grunt) {
                     "bower_components/magnific-popup/dist/jquery.magnific-popup.js",
                     "bower_components/angular/angular.min.js",
                     "bower_components/angular-route/angular-route.js",
-                    "bower_components/bootstrap/dist/js/boostrap.js",
+                    "bower_components/bootstrap/dist/js/bootstrap.js",
 //                    "bower_components/angular-bootstrap/ui-bootstrap.js",
                     "bower_components/angular-masonry/angular-masonry.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
                     "bower_components/elastic.js/dist/elastic.js",
                     "bower_components/elastic.js/dist/elastic-angular-client.js",
                     "bower_components/nginfinitescroll/build/ng-infinite-scroll.js",
-
-                    'src/js/*.js'
                 ],
                 // the location of the resulting JS file
+                dest: 'attachments/js/vendor.js'
+            },
+            app: {
+                src: ['src/js/*.js'],
                 dest: 'attachments/js/app.js'
             }
         },
@@ -89,6 +91,7 @@ module.exports = function (grunt) {
             options: {},
             build: {
                 files: {
+                    'attachments/js/vendor.min.js': ['attachments/js/vendor.js'],
                     'attachments/js/app.min.js': ['attachments/js/app.js']
                 }
             }

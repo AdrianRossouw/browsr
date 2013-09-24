@@ -17,7 +17,7 @@ var esUrl = {
   "protocol" : "http:",
   "port"     : "9200",
   "hostname" : "127.0.0.1",
-  "pathname" : "/pvt2/_search"
+  "pathname" : "/"
 };
 
 app.get('/js/*'    , passthrough(couchUrl));
@@ -25,7 +25,7 @@ app.get('/fonts/*' , passthrough(couchUrl));
 app.get('/css/*'   , passthrough(couchUrl));
 app.get('/views/*' , passthrough(couchUrl));
 app.all('/api/*'   , passthrough(couchUrl));
-app.all('/_search' , passthrough(esUrl));
+app.all('/search/*' , passthrough(esUrl, '/search'));
 
 app.get('/'  , getIndex);
 app.get('/*' , getIndex); // catch-all
@@ -34,12 +34,15 @@ app.listen(5000);
 
 // pass the request through unhindered,
 // with it's additional pathname specified.
-function passthrough(targetUrl) {
+function passthrough(targetUrl, pathChange) {
     return function(req, res, next) {
         var passUrl = {};
         _.defaults(passUrl, targetUrl);
         passUrl.pathname = path.join(targetUrl.pathname, req.url);
 
+        if (pathChange) {
+            passUrl.pathname = passUrl.pathname.replace(pathChange, '');
+        }
         var _url = url.format(passUrl);
         req.pipe(request(_url)).pipe(res);
     };

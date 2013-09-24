@@ -1,15 +1,19 @@
 !!! 5
-html(xmlns:ng='http://angularjs.org', ng-app='tumblr-browsr', ng-init="dbName='#{dbName}'")
+html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
   head
     title= pkg_name
     link(rel='stylesheet', type='text/css', href='css/style.css')
     base(href='{{root}}')
-
-  body(ng-controller='ctrlThumbs')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+      
+  body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'", ng-keydown='keyDown($event)')
     span(ng-include, src="'views/navbar.html'")
 
-    div.row(infinite-scroll='loadNext()', infinite-scroll-distance='2')
+    .row(infinite-scroll='loadNext()', infinite-scroll-distance='2')
       .col-lg-12
         span(ng-include, src="'views/masonry.html'")
+        
+    div(ng-view)
 
-  script(type='text/javascript', src='js/app.js')
+    script(type='text/javascript', src='js/vendor.js')
+    script(type='text/javascript', src='js/app.js')

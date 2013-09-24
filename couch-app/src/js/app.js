@@ -1,15 +1,17 @@
 /* jshint unused:false */
+var fuckingGlobal = null;
 
-
-
-
-angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll', 'ngRoute', 'elasticjs.service'])
-    .config(['$routeProvider', function($routeProvider) {
+var app = angular.module('tumblrBrowsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll', 'ngRoute', 'elasticjs.service'])
+    .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
-            .when('/site/:site', {  })
-            .when('/tag/:tag', {  })
-            .when('/all', {})
-            .otherwise({ redirectTo: '/all'});
+            .when('/site/:site', {})
+            .when('/tag/:tag', {})
+            .when('/', {})
+            .otherwise({redirectTo: '/site/tof34'});
+
+        //$locationProvider.html5Mode(true);
+
+        
     }])
     .directive('magnificPopup', function() {
         return {
@@ -25,21 +27,33 @@ angular.module('tumblr-browsr', ['CornerCouch', 'wu.masonry', 'infinite-scroll',
         };
     });
 
-function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $location) {
-    var ejs          = ejsResource('http://localhost:9200');
+function ctrlThumbs($scope) {
+}
+
+function ctrlMain($scope, cornercouch, $routeParams, ejsResource, $location) {
+    console.log(arguments);
+    var ejs          = ejsResource('/search');
 
     $scope.searchNoHits = false;
     $scope.qs        = '';
     $scope.appending = true;
     $scope.rows      = [];
+    $scope.filters = [];
+
     $scope.start     = 1;
     $scope.server    = cornercouch();
     $scope.tumblr    = $scope.server.getDB($scope.dbName || 'tumblr');
     $scope.root      = '/';
+    $scope.selected  = null;
 
     if ((/.*\/_design\/.*/).test(document.location)) {
         $scope.root = document.location;
     }
+
+    if ($routeParams.site) {
+
+    }
+
     $scope.query = ejs.Request()
         .indices("pvt2")
         .size(100)
@@ -52,6 +66,38 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $locat
 
     allQuery();
 
+
+    function updateSearch() {
+        var filter = false;
+
+        if ($scope.filters.length === 1) {
+            filter = _($scope.filters).chain()
+                .map(mapFilters)
+                .first()
+                .value();
+        } else if ($scope.filters.length > 1) {
+            filter = ejs.OrFilter(
+                _($scope.filters).map(mapFilters)
+            );
+        } else {
+            filter = ejs.MatchAllFilter();
+        }
+
+
+        $scope.rows = [];
+        $scope.start = 1;
+        $scope.appending = true;
+
+        $scope.query = $scope.query.filter(filter);
+       
+        $scope.query.doSearch().then(appendRows);
+
+        function mapFilters(filter) {
+            return ejs.TermFilter(filter.facet, filter.value);
+        }
+    }
+
+
     function allQuery() {
         $scope.query = $scope.query
             .query(ejs.MatchAllQuery());
@@ -61,6 +107,10 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $locat
     }
 
     $scope.facets = {};
+
+    function toggleFavorite(index) {
+        $scope.rows[index].favorite = true;
+    }
 
     function appendRows(results) {
         if (results.hits.total) {
@@ -108,11 +158,38 @@ function ctrlThumbs($scope, cornercouch, $log, $routeParams, ejsResource, $locat
                 .then(appendRows);
         }
     };
+
+    
+    $scope.toggleFilter = function(facet, value) {
+        var obj = {facet: facet, value: value};
+
+        var where = _($scope.filters).findWhere(obj);
+
+        if (where) {
+            $scope.filters = _($scope.filters).without(where);
+        } else {
+            $scope.filters.push(obj);
+        }
+        updateSearch();
+    };
+
+    $scope.isFilter = function(facet, value) {
+        var obj = {facet: facet, value: value};
+        return !!_($scope.filters).findWhere(obj);
+    };
+
+    $scope.keyDown = function($event) {
+        if ($event.which === 32) {
+            toggleFavorite(fuckingGlobal);
+        }
+    };
+
 }
 
-//ctrlThumbs.$inject = ['$scope', '$routeParams', '$location'];
+//ctrlMain.$inject = ['$scope', '$routeParams', '$location'];
 
 function magnificPopupLink(scope, element, attrs) {
+
     scope.$watch('rows', function() {
         $(element).magnificPopup({
             type: 'image',
@@ -121,6 +198,17 @@ function magnificPopupLink(scope, element, attrs) {
             preload: [1,2],
             gallery: {
                 enabled: true
+            },
+            callbacks: {
+                open: function() {
+                    fuckingGlobal = this.index;
+                },
+                change: function() {
+                    fuckingGlobal = this.index;
+                },
+                close: function() {
+                    fuckingGlobal = null;
+                }
             }
         });
     });
