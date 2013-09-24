@@ -1,0 +1,16 @@
+{
+    "type" : "couchdb",
+    "couchdb" : {
+        "host" : "localhost",
+        "port" : 5984,
+        "db" : "pvt2",
+        "filter" : null,
+        "ignore_attachments": true
+    },
+    "index" : {
+        "index" : "pvt2",
+        "type" : "tumblr",
+        "bulk_size" : "100",
+        "bulk_timeout" : "10ms"
+    }
+}
