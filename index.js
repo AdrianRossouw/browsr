@@ -39,7 +39,9 @@ var _jobs = [];
 
 function promiseJob(job, args) {
     var dfr = new _.Deferred();
-
+    nodeio.start(job, { args: args }, function(err, output) {
+        err ? dfr.reject(err) : dfr.resolve(output);
+    }, true);
     return dfr.promise();
 }
 
@@ -54,7 +56,6 @@ app.get('/jobs/:driver/*?', function(req, res, next) {
     }
 
     if (_jobs[key]) {
-        console.log(_jobs[key]);
         var state = _jobs[key].state();
         var _stateMap = {
             'rejected': 500,
