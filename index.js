@@ -1,11 +1,14 @@
+var nodeio  = require('node.io');
+var jobs    = require('./jobs');
 var express = require('express');
 var http    = require('http');
 var url     = require('url');
-var path     = require('path');
+var path    = require('path');
 var request = require('request');
 var _       = require('underscore');
 var app     = express();
 
+_.mixin(require('underscore.deferred'));
 //app.use(express.urlencoded());
 //app.use(express.json());
 
@@ -29,10 +32,47 @@ app.get('/fonts/*' , passthrough(couchUrl));
 app.get('/css/*'   , passthrough(couchUrl));
 app.get('/views/*' , passthrough(couchUrl));
 app.all('/api/*'   , passthrough(couchUrl));
-app.all('/search/*' , passthrough(esUrl, '/search'));
+app.all('/search/*', passthrough(esUrl, '/search'));
 
-app.get('/'  , getIndex);
-app.get('/*' , getIndex); // catch-all
+
+var _jobs = [];
+
+function promiseJob(job, args) {
+    var dfr = new _.Deferred();
+
+    return dfr.promise();
+}
+
+app.get('/jobs/:driver/*?', function(req, res, next) {
+    var driver = req.params.driver;
+    var args = (req.params[0]) ? req.params[0].split('/') : [];
+    var key = [driver].concat(args).join('/');
+
+
+    if (!jobs[driver]) { 
+        return res.send(404, {status: 'no such job'});
+    }
+
+    if (_jobs[key]) {
+        console.log(_jobs[key]);
+        var state = _jobs[key].state();
+        var _stateMap = {
+            'rejected': 500,
+            'resolved': 200,
+            'pending': 202
+        };
+
+        res.send(_stateMap[state], {status: state});
+    } else {
+        _jobs[key] = promiseJob(jobs[driver].job, args);
+
+        res.send(201, {status: 'started'});
+    }
+});
+
+
+app.get('/' , getIndex);
+app.get('/*', getIndex); // catch-all
 
 app.listen(5000);
 

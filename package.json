@@ -21,6 +21,7 @@
     "passport": "~0.1.17",
     "passport-tumblr": "~0.1.2",
     "express": "~3.4.0",
-    "http-proxy": "~0.10.3"
+    "http-proxy": "~0.10.3",
+    "underscore.deferred": "~0.4.0"
   }
 }
