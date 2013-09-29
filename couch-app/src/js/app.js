@@ -11,8 +11,8 @@ var app = angular.module('tumblrBrowsr', [
             .when('/site/:site', {})
             .when('/tag/:tag', {})
             .when('/likes', {})
-            .when('/', {})
-            .otherwise({redirectTo: '/site/tof34'});
+            .when('/:count', {})
+            .otherwise({redirectTo: '/'});
 
         //$locationProvider.html5Mode(true);
 
@@ -40,6 +40,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     var ejs             = ejsResource('/search');
 
+    $scope.$routeParams = $routeParams;
     $scope.searchNoHits = false;
     $scope.qs           = '';
     $scope.appending    = true;
@@ -55,15 +56,16 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.root = document.location;
     }
 
+    console.log(location);
     $scope.filters = $cookieStore.get('filters') || [];
 
     var termFacets = {
         site: ejs.TermsFacet('site')
             .field('site')
-            .size(20),
+            .size(40),
         tags: ejs.TermsFacet('tags')
             .field('tags')
-            .size(20),
+            .size(25),
         date: ejs.DateHistogramFacet('date')
             .keyField('date')
             .interval('month')
@@ -86,9 +88,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $(document).scrollTop(0);
 
         var filter = ejs.BoolFilter();
-
         var mapped = _($scope.filters).map(mapFilters);
-
 
         if ($scope.filters.length === 1) {
             filter = filter.must(_(mapped).first().filter);
@@ -98,13 +98,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             filter = ejs.MatchAllFilter();
         }
 
-
         $scope.rows = [];
         $scope.appending = true;
 
         termFacets.site.facetFilter(filter);
         termFacets.tags.facetFilter(filter);
-        //termFacets.date.facetFilter(filter);
         $scope.query = $scope.query.filter(filter);
 
         $scope.query.doSearch().then(appendRows);
