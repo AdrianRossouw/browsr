@@ -1,5 +1,7 @@
 # Magnific Popup Repository
 
+[![Build Status](https://travis-ci.org/dimsemenov/Magnific-Popup.png)](https://travis-ci.org/dimsemenov/Magnific-Popup)
+
 Fast, light and responsive lightbox plugin, for jQuery and Zepto.js.
 
 - [Documentation and getting started guide](http://dimsemenov.com/plugins/magnific-popup/documentation.html)
@@ -38,6 +40,14 @@ Optionally:
 
 
 ## Changelog
+
+### 0.9.6 (Sep 29, 2013)
+
+- Fixed bug: options object that you pass to popup gets modified after the initialization (#217, #203).
+- Fixed bug: zoom module creates global variable (#226).
+- Fixed bug: gallery from AJAX popups stacks content if it's switched before loading has finished.
+- Indented and combined SCSS classes (thanks to @nschonni).
+- `$.magnificPopup.close()` now doesn't throw an exception if there's no instance (#221, thanks to @mjlescano).
 
 ### 0.9.5 (Aug 21, 2013)
 

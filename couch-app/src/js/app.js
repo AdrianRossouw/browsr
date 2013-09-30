@@ -40,6 +40,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     var ejs             = ejsResource('/search');
 
+    $scope.infinite     = false;
     $scope.$routeParams = $routeParams;
     $scope.searchNoHits = false;
     $scope.qs           = '';
@@ -56,7 +57,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.root = document.location;
     }
 
-    console.log(location);
     $scope.filters = $cookieStore.get('filters') || [];
 
     var termFacets = {

@@ -17,7 +17,7 @@ var couchUrl = {
     "protocol"   : "http:",
     "port"       : "5984",
     "hostname"   : "127.0.0.1",
-    "pathname"   : "/pvt2/_design/app/_rewrite"
+    "pathname"   : "/browsr/_design/app/_rewrite"
 };
 
 var esUrl = {

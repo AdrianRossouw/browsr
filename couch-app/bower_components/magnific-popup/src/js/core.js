@@ -408,6 +408,8 @@ MagnificPopup.prototype = {
 		mfp.isOpen = true;
 		mfp.updateSize(windowHeight);
 		_mfpTrigger(OPEN_EVENT);
+
+		return data;
 	},
 
 	/**
@@ -821,8 +823,12 @@ $.magnificPopup = {
 	open: function(options, index) {
 		_checkInstance();	
 
-		if(!options) 
+		if(!options) {
 			options = {};
+		} else {
+			options = $.extend(true, {}, options);
+		}
+			
 
 		options.isObj = true;
 		options.index = index || 0;
@@ -830,7 +836,7 @@ $.magnificPopup = {
 	},
 
 	close: function() {
-		return $.magnificPopup.instance.close();
+		return $.magnificPopup.instance && $.magnificPopup.instance.close();
 	},
 
 	registerModule: function(name, module) {
@@ -920,7 +926,9 @@ $.fn.magnificPopup = function(options) {
 		}
 
 	} else {
-
+		// clone options obj
+		options = $.extend(true, {}, options);
+		
 		/*
 		 * As Zepto doesn't support .data() method for objects 
 		 * and it works only in normal browsers

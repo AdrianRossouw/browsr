@@ -1,6 +1,6 @@
 {
   "couchapp": {
-  	"db": "http://localhost:5984/tumblr",
+  	"db": "http://localhost:5984/browsr",
   	"app": "app.js",
     "options": {
       "okay_if_exists": true,
@@ -9,7 +9,7 @@
   },
   "template": {
     "title": "browsr",
-    "dbName": "tumblr",
+    "dbName": "browsr",
     "subtitle": "ui for browsing tumblr photo blogs"
   }
 }
