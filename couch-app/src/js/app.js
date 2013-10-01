@@ -40,7 +40,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     var ejs             = ejsResource('/search');
 
-    $scope.infinite     = false;
+    $scope.infinite     = $cookieStore.get('infinite') || false;
     $scope.$routeParams = $routeParams;
     $scope.searchNoHits = false;
     $scope.qs           = '';
@@ -62,10 +62,13 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     var termFacets = {
         site: ejs.TermsFacet('site')
             .field('site')
-            .size(40),
+            .size(35),
         tags: ejs.TermsFacet('tags')
             .field('tags')
-            .size(25),
+            .size(20),
+        favs: ejs.TermsFacet('favs')
+            .field('favorite')
+            .size(3),
         date: ejs.DateHistogramFacet('date')
             .keyField('date')
             .interval('month')
@@ -76,9 +79,10 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         .size(100)
         .from($scope.start)
         .facet(termFacets.site)
+        .facet(termFacets.favs)
         .facet(termFacets.tags)
         //.facet(termFacets.date)
-        .sort(ejs.Sort('date').desc());
+        .sort(ejs.Sort('timestamp').desc());
 
     allQuery();
 
@@ -103,6 +107,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         termFacets.site.facetFilter(filter);
         termFacets.tags.facetFilter(filter);
+        termFacets.favs.facetFilter(filter);
+
         $scope.query = $scope.query.filter(filter);
 
         $scope.query.doSearch().then(appendRows);
@@ -114,7 +120,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         function mapFilters(filter) {
             return {
-                filter: ejs.TermFilter(filter.facet, filter.value),
+                filter: ejs[filter.filter || 'TermFilter'](filter.facet, filter.value),
                 priority: filter.priority || 'must'
             };
         }
@@ -131,6 +137,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.filters = [];
         $cookies.filters = $scope.filters;
         $cookieStore.put('filters', $scope.filters);
+        setInfinite(false);
         setStart(1);
         updateSearch();
     };
@@ -140,6 +147,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             $scope.total = results.hits.total;
             $scope.searchNoHits = false;
             $scope.facets = results.facets;
+            console.log($scope.facets);
             var newRows = _(results.hits.hits || []).chain()
                 .pluck('_source')
                 .map(imageMapFn)
@@ -151,6 +159,10 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         $scope.appending = false;
 
+        function mapFacets(facet) {
+            console.log(facet);
+            return facet;
+        }
         function imageMapFn(obj) {
             obj.images = _(obj.images).chain()
                 .map(function(img) { img.id = obj._id; return img; })
@@ -160,15 +172,42 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
     }
 
-    $scope.search = function(qs) {
-        if (qs.length) {
-            $scope.qs = angular.copy(qs);
-            $scope.rows = [];
-            setStart(0);
+    function setInfinite(state) {
+        $scope.infinite = state;
+        $cookieStore.put('infinite', state);
+    }
 
-            $scope.query = $scope.query.query(ejs.QueryStringQuery($scope.qs));
-            $scope.query.doSearch()
-                .then(appendRows);
+    $scope.toggleInfinite = function() {
+        setInfinite(!$scope.infinite);
+    };
+
+    $scope.canNext = function() {
+        return ($scope.start + 100) < $scope.total;
+    };
+
+    $scope.stepNext = function() {
+        if ($scope.canNext()) {
+            setStart($scope.start + 100);
+            $scope.appending = false;
+            $scope.rows = [];
+
+            $(document).scrollTop(0);
+            loadRecords($scope.start);
+        }
+    };
+
+    $scope.canBack = function() {
+       return ($scope.start - 100) >= 1;
+    };
+
+    $scope.stepBack = function() {
+        if ($scope.canBack()) {
+            setStart($scope.start - 100);
+            $scope.appending = false;
+            $scope.rows = [];
+
+            $(document).scrollTop(0);
+            loadRecords($scope.start);
         }
     };
 
@@ -177,23 +216,19 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookieStore.put('start', start);
     }
 
-    $scope.startHere = function() {
-        setStart($scope.start + $scope.rows.length - 100);
-        $scope.appending = false;
-        $scope.rows = [];
+    function loadRecords(from) {
+        $scope.appending = true;
+        $scope.query = $scope.query.from(from);
 
-        $(document).scrollTop(0);
-        $scope.loadNext();
-    };
+        $scope.query.doSearch()
+            .then(appendRows);
+    }
 
-    $scope.loadNext = function() {
-        if (!$scope.appending) {
-            $scope.appending = true;
-            var from = $scope.start + $scope.rows.length; 
-            $scope.query = $scope.query.from(from);
-
-            $scope.query.doSearch()
-                .then(appendRows);
+    $scope.loadInfinite = function() {
+        if (!$scope.appending && $scope.infinite) {
+            var from = $scope.start + $scope.rows.length;
+            setStart(from);
+            loadRecords(from);
         }
     };
 
@@ -232,6 +267,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         doc.load(id).then(function(data) {
             doc.favorite = newState;
+            doc.favorDate = Date.now();
             doc.save();
         }, function(err) {
             console.log('error', err);

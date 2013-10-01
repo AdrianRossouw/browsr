@@ -5,7 +5,7 @@
                 "site": {"type": "string", "index": "not_analyzed"},
                 "date": {"type": "date", "format":"YYYY-MM-dd HH:mm:ss z"},
                 "favorite": {"type": "boolean"},
-                "timestamp": {"type": "integer"},
+                "timestamp": {"type": "date"},
                 "images": {
                     "index_name": "image",
                     "properties": {

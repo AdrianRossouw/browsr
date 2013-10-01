@@ -1,9 +1,7 @@
 nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   .navbar-header
     a.navbar-brand(href='#', ng-click='resetAll()')= title
-  p.navbar-text
-    a(ng-click='startHere()')
-      span.glyphicon.glyphicon-save
+
   ul.nav.navbar-nav
     li(ng-class="isFilter('favorite', true) ? 'active' : ''")
       a(ng-click="toggleFilter('favorite', true, 'must')") liked
@@ -21,10 +19,17 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   p.navbar-text(ng-show='appending')
     span.glyphicon.glyphicon-cog
       |  loading
-  
-  form.navbar-form.navbar-right(role='search')
-    .form-group
-        input.form-control(ng-model='qs', type='text', placeholder='Search')
-      button.btn.btn-default(ng-click='search(qs)', type='submit') Submit
+
+  .navbar-btn.btn-default.btn-group.pull-right
+    button.btn.btn-default(ng-class="canBack() ? '' : 'disabled'", type='button')
+      a(ng-click='stepBack()')
+        span.glyphicon.glyphicon-step-backward
+    button.btn.btn-default(ng-class="infinite ? 'active': ''", type='button')
+      a(ng-click='toggleInfinite()')
+        span.glyphicon.glyphicon-refresh
+    button.btn.btn-default(ng-class="canNext() ? '' : 'disabled'", type='button')
+      a(ng-click='stepNext()')
+        span.glyphicon.glyphicon-step-forward
+
   p.navbar-text.pull-right(ng-show='!appending')
     | {{start}} - {{start + rows.length - 1}} / {{total}}
