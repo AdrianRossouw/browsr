@@ -1,15 +1,15 @@
 {
-  "couchapp": {
-  	"db": "http://localhost:5984/browsr",
-  	"app": "app.js",
-    "options": {
-      "okay_if_exists": true,
-      "okay_if_missing": true
+    "couchapp": {
+        "db": "http://localhost:5984/pvt2",
+        "app": "app.js",
+        "options": {
+            "okay_if_exists": true,
+            "okay_if_missing": true
+        }
+    },
+    "template": {
+        "title": "browsr",
+        "dbName": "pvt2",
+        "subtitle": "ui for browsing tumblr photo blogs"
     }
-  },
-  "template": {
-    "title": "browsr",
-    "dbName": "browsr",
-    "subtitle": "ui for browsing tumblr photo blogs"
-  }
 }

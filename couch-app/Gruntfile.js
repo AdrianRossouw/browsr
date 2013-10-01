@@ -45,6 +45,11 @@ module.exports = function (grunt) {
                 expand: true, flatten: true, filter: 'isFile',
                 src: ['bower_components/bootstrap/dist/fonts/*'],
                 dest: 'attachments/fonts/'
+            },
+            img: {
+                expand: true, flatten: true, filter: 'isFile',
+                src: ['img/*'],
+                dest: 'attachments/img/'
             }
         },
         concat: {

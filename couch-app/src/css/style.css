@@ -39,10 +39,21 @@ body { color: #333;
   max-width: 100%;
 }
 
-.favorite {
-  border: 2px solid lightgreen;
-  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+.masonry-brick a {
+  position: relative;
+  display: block;
 }
+
+.favorite {
+//  border: 2px solid lightgreen;
+//  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.favorite a:before {
+   content: url(/img/like.png);
+   position: absolute;
+   right: 20px;
+   top: 20px;
+ }
 
 img.selected {
   width: 100%;

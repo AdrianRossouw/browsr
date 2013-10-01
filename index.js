@@ -17,7 +17,7 @@ var couchUrl = {
     "protocol"   : "http:",
     "port"       : "5984",
     "hostname"   : "127.0.0.1",
-    "pathname"   : "/browsr/_design/app/_rewrite"
+    "pathname"   : "/pvt2/_design/app/_rewrite"
 };
 
 var esUrl = {
@@ -30,6 +30,7 @@ var esUrl = {
 app.get('/js/*'    , passthrough(couchUrl));
 app.get('/fonts/*' , passthrough(couchUrl));
 app.get('/css/*'   , passthrough(couchUrl));
+app.get('/img/*'   , passthrough(couchUrl));
 app.get('/views/*' , passthrough(couchUrl));
 app.all('/api/*'   , passthrough(couchUrl));
 app.all('/search/*', passthrough(esUrl, '/search'));
