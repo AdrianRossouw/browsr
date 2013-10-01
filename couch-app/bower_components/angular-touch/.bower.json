@@ -1,0 +1,19 @@
+{
+  "name": "angular-touch",
+  "version": "1.2.0-rc.2",
+  "main": "./angular-touch.js",
+  "dependencies": {
+    "angular": "1.2.0-rc.2"
+  },
+  "homepage": "https://github.com/angular/bower-angular-touch",
+  "_release": "1.2.0-rc.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.2.0-rc.2",
+    "commit": "f11ca92e6c6c564e7975ef048f29ee052e1502c9"
+  },
+  "_source": "git://github.com/angular/bower-angular-touch.git",
+  "_target": "~1.2.0-rc.2",
+  "_originalSource": "angular-touch",
+  "_direct": true
+}

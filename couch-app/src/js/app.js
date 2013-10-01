@@ -4,7 +4,8 @@ var fuckingGlobal = null;
 
 var app = angular.module('tumblrBrowsr', [
     'CornerCouch', 'wu.masonry', 'infinite-scroll',
-    'ngRoute', 'ngCookies', 'elasticjs.service'
+    'ngRoute', 'ngCookies', 'ngTouch', 'hmTouchEvents',
+    'elasticjs.service'
     ])
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
@@ -52,12 +53,13 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.db           = $scope.server.getDB('api');
     $scope.root         = '/';
     $scope.selected     = null;
+    $scope.perPage      = 50;
+    $scope.filters = $cookieStore.get('filters') || [];
 
     if ((/.*\/_design\/.*/).test(document.location)) {
         $scope.root = document.location;
     }
 
-    $scope.filters = $cookieStore.get('filters') || [];
 
     var termFacets = {
         site: ejs.TermsFacet('site')
@@ -76,10 +78,9 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     $scope.query = ejs.Request()
         .indices("pvt2")
-        .size(100)
+        .size($scope.perPage)
         .from($scope.start)
         .facet(termFacets.site)
-        .facet(termFacets.favs)
         .facet(termFacets.tags)
         //.facet(termFacets.date)
         .sort(ejs.Sort('timestamp').desc());
@@ -107,7 +108,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         termFacets.site.facetFilter(filter);
         termFacets.tags.facetFilter(filter);
-        termFacets.favs.facetFilter(filter);
 
         $scope.query = $scope.query.filter(filter);
 
@@ -182,12 +182,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     $scope.canNext = function() {
-        return ($scope.start + 100) < $scope.total;
+        return ($scope.start + $scope.perPage) < $scope.total;
     };
 
     $scope.stepNext = function() {
         if ($scope.canNext()) {
-            setStart($scope.start + 100);
+            setStart($scope.start + $scope.perPage);
             $scope.appending = false;
             $scope.rows = [];
 
@@ -197,12 +197,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     $scope.canBack = function() {
-       return ($scope.start - 100) >= 1;
+       return ($scope.start - $scope.perPage) >= 1;
     };
 
     $scope.stepBack = function() {
         if ($scope.canBack()) {
-            setStart($scope.start - 100);
+            setStart($scope.start - $scope.perPage);
             $scope.appending = false;
             $scope.rows = [];
 
@@ -277,21 +277,31 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.mouseDown = function($event) {
         if ($event.which === 3) {
             $event.preventDefault();
-
-            var index = false;
-
-            if (fuckingGlobal === null) {
-                index = $($event.target).attr('data-index');
-            } else {
-                index = fuckingGlobal;
-            }
-
-            if (index) { toggleFavorite(index); }
+            mouseFavorite($event);
         }
     };
     $scope.keyDown = function($event) {
         if ($event.which === 32) {
             toggleFavorite(fuckingGlobal);
+        }
+    };
+
+    function mouseFavorite($event) {
+
+        var index = false;
+
+        if (fuckingGlobal === null) {
+            index = $($event.target).attr('data-index');
+        } else {
+            index = fuckingGlobal;
+        }
+
+        if (index) { toggleFavorite(index); }
+    }
+
+    $scope.tap = function($event) {
+        if ($event.gesture.touches.length === 2) {
+            mouseFavorite($event);
         }
     };
 

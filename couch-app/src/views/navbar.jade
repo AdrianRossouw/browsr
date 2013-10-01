@@ -16,10 +16,6 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
             | {{term.term}}
             span.pull-right.badge {{term.count}}
  
-  p.navbar-text(ng-show='appending')
-    span.glyphicon.glyphicon-cog
-      |  loading
-
   .navbar-btn.btn-default.btn-group.pull-right
     button.btn.btn-default(ng-class="canBack() ? '' : 'disabled'", type='button')
       a(ng-click='stepBack()')
@@ -31,5 +27,8 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
       a(ng-click='stepNext()')
         span.glyphicon.glyphicon-step-forward
 
+  p.navbar-text.pull-right(ng-show='appending')
+    span.glyphicon.glyphicon-cog
+      |  loading
   p.navbar-text.pull-right(ng-show='!appending')
     | {{start}} - {{start + rows.length - 1}} / {{total}}

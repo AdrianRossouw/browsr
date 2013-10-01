@@ -54,4 +54,6 @@ img.selected {
   display: block;
 }
 
-
+.btn-group {
+  margin-right: 0.5em;
+}
