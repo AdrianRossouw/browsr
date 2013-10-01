@@ -50,6 +50,7 @@ img.selected {
   box-sizing: border-box;
 }
 
+
 .masonry-brick.loaded img {
   display: block;
 }

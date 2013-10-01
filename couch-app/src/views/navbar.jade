@@ -2,33 +2,36 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
   .navbar-header
     a.navbar-brand(href='#', ng-click='resetAll()')= title
 
-  ul.nav.navbar-nav
-    li.dropdown.dropup(ng-repeat='(facetName, facet) in facets')
-      a.dropdown-toggle(href='#', data-toggle='dropdown')
-        | {{facetName}}
+  .navbar-btn.btn-default.btn-group
+    span.dropdown.dropup(ng-repeat='(facetName, facet) in facets')
+      button.btn.btn-default(ng-hide='!isFilter(facetName)', ng-click='toggleFilter(facetName, filterValue(facetName))')
+        | {{filterValue(facetName)}} 
+        b &times;
+      button.btn.btn-default.dropdown-toggle(data-toggle='dropdown', ng-hide='isFilter(facetName)')
+        | {{facetName}}  
         b.caret
-      ul.dropdown-menu(role='menu')
+      ul.dropdown-menu(role='menu', ng-hide='isFilter(facetName)')
         li(ng-class="isFilter(facetName, term.term) ? 'active' : ''",
           ng-repeat='term in facet.terms')
-          a(ng-click='toggleFilter(facetName, term.term)')
+          a(ng-click='toggleFilter(facetName, term.term, facet._type)')
             | {{term.term}}
             span.pull-right.badge {{term.count}}
  
   .navbar-btn.btn-default.btn-group.pull-right
-    button.btn.btn-default(ng-class="canBack() ? '' : 'disabled'", type='button')
-      a(ng-click='stepBack()')
+    button.btn.btn-default(ng-class="canBack() ? '' : 'disabled'", type='button',ng-click='stepBack()')
+      a
         span.glyphicon.glyphicon-step-backward
-    button.btn.btn-default(ng-class="seenClass()", type='button')
-      a(ng-click='toggleSeen()')
+    button.btn.btn-default(ng-class="seenClass()", type='button', ng-click='toggleSeen()')
+      a
         span.glyphicon.glyphicon-eye-close
-    button.btn.btn-default(ng-class="likeClass()", type='button')
-      a(ng-click='toggleOnlyLikes()')
+    button.btn.btn-default(ng-class="likeClass()", type='button', ng-click='toggleOnlyLikes()')
+      a
         span.glyphicon.glyphicon-bookmark
-    button.btn.btn-default(ng-class="infinite ? 'active': ''", type='button')
-      a(ng-click='toggleInfinite()')
+    button.btn.btn-default(ng-class="infinite ? 'active': ''", type='button', ng-click='toggleInfinite()')
+      a
         span.glyphicon.glyphicon-refresh
-    button.btn.btn-default(ng-class="canNext() ? '' : 'disabled'", type='button')
-      a(ng-click='stepNext()')
+    button.btn.btn-default(ng-class="canNext() ? '' : 'disabled'", type='button', ng-click='stepNext()')
+      a
         span.glyphicon.glyphicon-step-forward
 
   p.navbar-text.pull-right(ng-show='appending')

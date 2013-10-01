@@ -70,9 +70,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         tags: ejs.TermsFacet('tags')
             .field('tags')
             .size(20),
-        favs: ejs.TermsFacet('favs')
-            .field('favorite')
-            .size(3),
         date: ejs.DateHistogramFacet('date')
             .keyField('date')
             .interval('month')
@@ -84,12 +81,21 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         .from($scope.start)
         .facet(facets.site)
         .facet(facets.tags)
-        //.facet(facets.date)
+        .facet(facets.date)
         .sort(ejs.Sort('timestamp').desc());
 
-    allQuery();
+    var filterFns = {};
 
-    updateSearch();
+    filterFns.terms = function(filter) {
+        return ejs.TermFilter(filter.facet, filter.value);
+    };
+
+    filterFns.date_histogram = function(filter) {
+        console.log(filter);
+        return ejs.RangeFilter(filter.facet)
+            .from(filter.value)
+            .to(filter.value + '||+1M-1d');
+    };
 
     function updateSearch() {
         $(document).scrollTop(0);
@@ -116,6 +122,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         facets.site = facets.site.facetFilter(filter);
         facets.tags = facets.tags.facetFilter(filter);
+        facets.date = facets.date.facetFilter(filter);
 
         $scope.query = $scope.query.filter(filter);
 
@@ -128,12 +135,16 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         function mapFilters(filter) {
             return {
-                filter: ejs[filter.filter || 'TermFilter'](filter.facet, filter.value),
+                filter: filterFns[filter.type](filter),
                 priority: filter.priority || 'must'
             };
         }
     }
 
+
+    allQuery();
+
+    updateSearch();
 
     function allQuery() {
         $scope.query = $scope.query
@@ -154,8 +165,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         if (results.hits.total) {
             $scope.total = results.hits.total;
             $scope.searchNoHits = false;
-            $scope.facets = results.facets;
-            console.log($scope.facets);
+            $scope.facets = _(results.facets).reduce(mapFacets, {});
             var newRows = _(results.hits.hits || []).chain()
                 .pluck('_source')
                 .map(imageMapFn)
@@ -167,9 +177,26 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         $scope.appending = false;
 
-        function mapFacets(facet) {
-            console.log(facet);
-            return facet;
+        function mapFacets(memo, facet, key) {
+
+            if (facet._type === 'date_histogram') {
+                facet.terms = _(facet.entries).map(mapEntries);
+                facet.total = _(facet.entries).reduce(sumFn, 0);
+            }
+
+            if (!facet.total) { return memo; }
+            memo[key] = facet;
+            return memo;
+        }
+
+        function sumFn(memo, obj) {
+            return memo + obj.count;
+        }
+        function mapEntries(entry) {
+            return {
+                term: $scope.getMonth(parseInt(entry.time, 10)),
+                count: entry.count
+            };
         }
         function imageMapFn(obj) {
             obj.images = _(obj.images).chain()
@@ -273,11 +300,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
     };
 
-    
-    $scope.toggleFilter = function(facet, value, priority) {
+
+    $scope.toggleFilter = function(facet, value, type, priority) {
         var obj = {facet: facet, value: value};
         var where = _($scope.filters).findWhere(obj);
 
+        if (type) { obj.type = type || 'terms'; }
         if (priority) { obj.priority = priority; }
 
         if (where) {
@@ -289,10 +317,20 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookieStore.put('filters', $scope.filters);
         setStart(1);
         updateSearch();
+
     };
 
+    $scope.filterValue = function(facet) {
+        var obj = {facet: facet};
+        var where = _($scope.filters)
+            .findWhere(obj);
+        return where ? where.value : '';
+    };
     $scope.isFilter = function(facet, value) {
-        var obj = {facet: facet, value: value};
+        var obj = {facet: facet};
+        if (!_(value).isUndefined) {
+            obj.value = value;
+        }
         return !!_($scope.filters).findWhere(obj);
     };
  
@@ -325,6 +363,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         if ($event.which === 32) {
             toggleFavorite(fuckingGlobal);
         }
+    };
+
+    $scope.getMonth = function(d) {
+        d = new Date(d);
+        function pad(n){return n<10 ? '0'+n : n;}
+        return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1);
     };
 
     function mouseFavorite($event) {
