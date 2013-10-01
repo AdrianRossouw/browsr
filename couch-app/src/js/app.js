@@ -49,6 +49,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.rows         = [];
     $scope.facets       = {};
     $scope.start        = $cookieStore.get('start') || 1;
+    $scope.from         = $scope.start;
     $scope.server       = cornercouch();
     $scope.db           = $scope.server.getDB('api');
     $scope.root         = '/';
@@ -158,6 +159,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookieStore.put('filters', $scope.filters);
         setInfinite(false);
         setStart(1);
+        $scope.from = $scope.start;
+        $scope.total = 0;
         updateSearch();
     };
 
@@ -223,11 +226,21 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.stepNext = function() {
         if ($scope.canNext()) {
             setStart($scope.start + $scope.perPage);
+            $scope.from = $scope.start;
+            var from =  $scope.start;
+
             $scope.appending = false;
             $scope.rows = [];
 
             $(document).scrollTop(0);
-            loadRecords($scope.start);
+            if ($scope.hideSeen) {
+                // hide the results already seen
+                // so we don't page over new results.
+                from = from - seenRows();
+            }
+
+
+            loadRecords(from);
         }
     };
 
@@ -243,6 +256,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             $scope.hideSeen = !$scope.hideSeen;
             $cookieStore.put('hideSeen', $scope.hideSeen);
             setStart(1);
+            $scope.from = $scope.start;
             updateSearch();
         }
     };
@@ -252,6 +266,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             $scope.onlyLikes = !$scope.onlyLikes;
             $cookieStore.put('onlyLikes', $scope.onlyLikes);
             setStart(1);
+            $scope.from = $scope.start;
             updateSearch();
         }
     };
@@ -271,6 +286,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.stepBack = function() {
         if ($scope.canBack()) {
             setStart($scope.start - $scope.perPage);
+            $scope.from = $scope.start;
             $scope.appending = false;
             $scope.rows = [];
 
@@ -284,6 +300,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookieStore.put('start', start);
     }
 
+    function seenRows() {
+        return _($scope.rows).reduce(function(c, r) {
+            return _(r).has('favorite') ? c + 1 : c;
+        }, 0);
+    }
+
     function loadRecords(from) {
         $scope.appending = true;
         $scope.query = $scope.query.from(from);
@@ -293,9 +315,16 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     }
 
     $scope.loadInfinite = function() {
-        if (!$scope.appending && $scope.infinite) {
+        if (!$scope.appending && $scope.infinite && $scope.canNext()) {
+            $scope.appending = true;
             var from = $scope.start + $scope.rows.length;
             setStart(from);
+            if ($scope.hideSeen) {
+                // hide the results already seen
+                // so we don't page over new results.
+                from = from - seenRows();
+            }
+
             loadRecords(from);
         }
     };
@@ -316,6 +345,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookies.filters = $scope.filters;
         $cookieStore.put('filters', $scope.filters);
         setStart(1);
+        $scope.from = $scope.start;
         updateSearch();
 
     };
