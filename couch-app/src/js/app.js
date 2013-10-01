@@ -55,7 +55,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.selected     = null;
     $scope.perPage      = 50;
     $scope.hideSeen     = $cookieStore.get('hideSeen') || false;
-    $scope.filters = $cookieStore.get('filters') || [];
+    $scope.onlyLikes    = $cookieStore.get('onlyLikes') || false;
+    $scope.filters      = $cookieStore.get('filters') || [];
 
     if ((/.*\/_design\/.*/).test(document.location)) {
         $scope.root = document.location;
@@ -96,8 +97,9 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         var filter = ejs.BoolFilter();
         var mapped = _($scope.filters).map(mapFilters);
 
-        if ($scope.hideSeen) {
-            console.log('hide seen');
+        if ($scope.onlyLikes) {
+            filter = filter.must(ejs.TermFilter('favorite', true));
+        } else if ($scope.hideSeen) {
             filter = filter.mustNot(ejs.ExistsFilter('favorite'));
         }
 
@@ -105,7 +107,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             filter = filter.must(_(mapped).first().filter);
         } else if ($scope.filters.length > 1) {
             filter = _(mapped).reduce(reduceMappedFilters, filter);
-        } else if (!$scope.hideSeen) {
+        } else if (!$scope.hideSeen && !$scope.onlyLikes) {
             filter = ejs.MatchAllFilter();
         }
 
@@ -201,13 +203,39 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             loadRecords($scope.start);
         }
     };
-    
-    $scope.toggleSeen = function() {
-        $scope.hideSeen = !$scope.hideSeen;
-        $cookieStore.put('hideSeen', $scope.hideSeen);
-        setStart(1);
-        updateSearch();
+
+    $scope.seenClass = function() {
+        if ($scope.onlyLikes) {
+            return 'disabled';
+        }
+        return $scope.hideSeen ? 'active' : '';
     };
+
+    $scope.toggleSeen = function() {
+        if (!$scope.onlyLikes) {
+            $scope.hideSeen = !$scope.hideSeen;
+            $cookieStore.put('hideSeen', $scope.hideSeen);
+            setStart(1);
+            updateSearch();
+        }
+    };
+
+    $scope.toggleOnlyLikes = function() {
+        if (!$scope.hideSeen) {
+            $scope.onlyLikes = !$scope.onlyLikes;
+            $cookieStore.put('onlyLikes', $scope.onlyLikes);
+            setStart(1);
+            updateSearch();
+        }
+    };
+
+    $scope.likeClass = function() {
+        if ($scope.hideSeen) {
+            return 'disabled';
+        }
+        return $scope.onlyLikes ? 'active' : '';
+    };
+
 
     $scope.canBack = function() {
        return ($scope.start - $scope.perPage) >= 1;
