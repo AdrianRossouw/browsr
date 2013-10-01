@@ -23,6 +23,9 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
     button.btn.btn-default(ng-class="infinite ? 'active': ''", type='button')
       a(ng-click='toggleInfinite()')
         span.glyphicon.glyphicon-refresh
+    button.btn.btn-default(ng-class="hideSeen ? 'active' : ''", type='button')
+      a(ng-click='toggleSeen()')
+        span.glyphicon.glyphicon-eye-close
     button.btn.btn-default(ng-class="canNext() ? '' : 'disabled'", type='button')
       a(ng-click='stepNext()')
         span.glyphicon.glyphicon-step-forward

@@ -1,0 +1,31 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/adrian/.nvm/v0.10.13/bin/node',
+1 verbose cli   '/Users/adrian/.nvm/v0.10.13/bin/npm',
+1 verbose cli   'info',
+1 verbose cli   'angular-bootstrap' ]
+2 info using npm@1.3.2
+3 info using node@v0.10.13
+4 verbose url raw angular-bootstrap
+5 verbose url resolving [ 'https://registry.npmjs.org/', './angular-bootstrap' ]
+6 verbose url resolved https://registry.npmjs.org/angular-bootstrap
+7 info trying registry request attempt 1 at 23:25:40
+8 http GET https://registry.npmjs.org/angular-bootstrap
+9 http 404 https://registry.npmjs.org/angular-bootstrap
+10 silly registry.get cb [ 404,
+10 silly registry.get   { server: 'CouchDB/1.3.1 (Erlang OTP/R15B03)',
+10 silly registry.get     date: 'Sun, 29 Sep 2013 21:25:42 GMT',
+10 silly registry.get     'content-type': 'application/json',
+10 silly registry.get     'content-length': '52',
+10 silly registry.get     'cache-control': 'must-revalidate' } ]
+11 error 404 'angular-bootstrap' is not in the npm registry.
+11 error 404 You should bug the author to publish it
+11 error 404
+11 error 404 Note that you can also install from a
+11 error 404 tarball, folder, or http url, or git url.
+12 error System Darwin 12.5.0
+13 error command "/Users/adrian/.nvm/v0.10.13/bin/node" "/Users/adrian/.nvm/v0.10.13/bin/npm" "info" "angular-bootstrap"
+14 error cwd /Users/adrian/Projects/tumblr/couch-app
+15 error node -v v0.10.13
+16 error npm -v 1.3.2
+17 error code E404
+18 verbose exit [ 1, true ]

@@ -54,6 +54,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.root         = '/';
     $scope.selected     = null;
     $scope.perPage      = 50;
+    $scope.hideSeen     = $cookieStore.get('hideSeen') || false;
     $scope.filters = $cookieStore.get('filters') || [];
 
     if ((/.*\/_design\/.*/).test(document.location)) {
@@ -61,7 +62,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     }
 
 
-    var termFacets = {
+    var facets = {
         site: ejs.TermsFacet('site')
             .field('site')
             .size(35),
@@ -80,9 +81,9 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         .indices("pvt2")
         .size($scope.perPage)
         .from($scope.start)
-        .facet(termFacets.site)
-        .facet(termFacets.tags)
-        //.facet(termFacets.date)
+        .facet(facets.site)
+        .facet(facets.tags)
+        //.facet(facets.date)
         .sort(ejs.Sort('timestamp').desc());
 
     allQuery();
@@ -95,19 +96,24 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         var filter = ejs.BoolFilter();
         var mapped = _($scope.filters).map(mapFilters);
 
+        if ($scope.hideSeen) {
+            console.log('hide seen');
+            filter = filter.mustNot(ejs.ExistsFilter('favorite'));
+        }
+
         if ($scope.filters.length === 1) {
             filter = filter.must(_(mapped).first().filter);
         } else if ($scope.filters.length > 1) {
             filter = _(mapped).reduce(reduceMappedFilters, filter);
-        } else {
+        } else if (!$scope.hideSeen) {
             filter = ejs.MatchAllFilter();
         }
 
         $scope.rows = [];
         $scope.appending = true;
 
-        termFacets.site.facetFilter(filter);
-        termFacets.tags.facetFilter(filter);
+        facets.site = facets.site.facetFilter(filter);
+        facets.tags = facets.tags.facetFilter(filter);
 
         $scope.query = $scope.query.filter(filter);
 
@@ -194,6 +200,13 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             $(document).scrollTop(0);
             loadRecords($scope.start);
         }
+    };
+    
+    $scope.toggleSeen = function() {
+        $scope.hideSeen = !$scope.hideSeen;
+        $cookieStore.put('hideSeen', $scope.hideSeen);
+        setStart(1);
+        updateSearch();
     };
 
     $scope.canBack = function() {
