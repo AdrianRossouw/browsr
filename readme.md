@@ -8,7 +8,31 @@ requirements :
 1. elasticsearch running on localhost:9200
 1. node.js + npm
 
-installation:
+pre-installation:
+
+    # get the osx command line tools first
+    # either from developer.apple.com/download, or from xcode.
+
+    # install homebrew
+    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+
+    # install elastic search
+    brew install elasticsearch
+    plugin -install elasticsearch/elasticsearch-river-couchdb/1.2.0
+
+    # install couch db from the package on couchdb.apache.org
+
+    # install nvm for node
+    touch ~/.profile
+    curl https://raw.github.com/creationix/nvm/master/install.sh | sh
+    source ~/.nvm/nvm.sh
+
+    # install node
+    nvm install 0.10
+    nvm use 0.10
+   
+
+actual installation:
 
     npm install -g grunt-cli bower node.io
 
