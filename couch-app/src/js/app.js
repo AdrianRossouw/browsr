@@ -296,8 +296,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     function setStart(start) {
-        if ($step.total && (start > $step.total)) {
-            start = $step.total % $step.perPage;
+        if ($scope.total && (start > $scope.total)) {
+            start = $scope.total % $scope.perPage;
         }
         $scope.start = start;
         $cookieStore.put('start', start);
