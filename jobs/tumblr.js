@@ -5,7 +5,7 @@ var debug          = require('debug')('tumblr:fetch.lists');
 var async          = require('async');
 var path           = require('path');
 var url            = require('url');
-var db             = require('nano')('http://localhost:5984/browsr');
+var db             = require('nano')('http://localhost:5984/pvt2');
 var _              = require('underscore');
 var Input          = require('../lib/input').job;
 
@@ -100,6 +100,7 @@ function mapJson(input, $) {
         return {
             _id          : id,
             id           : id,
+            created      : Date.now(),
             driver       : 'tumblr',
             site         : input.name,
             url          : $el.attr('url'),

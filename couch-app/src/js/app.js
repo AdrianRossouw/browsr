@@ -296,6 +296,9 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     function setStart(start) {
+        if ($step.total && (start > $step.total)) {
+            start = $step.total % $step.perPage;
+        }
         $scope.start = start;
         $cookieStore.put('start', start);
     }
@@ -315,17 +318,21 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     }
 
     $scope.loadInfinite = function() {
-        if (!$scope.appending && $scope.infinite && $scope.canNext()) {
+        if (!$scope.appending && $scope.infinite) {
             $scope.appending = true;
-            var from = $scope.start + $scope.rows.length;
-            setStart(from);
-            if ($scope.hideSeen) {
-                // hide the results already seen
-                // so we don't page over new results.
-                from = from - seenRows();
-            }
+            if ($scope.canNext()) {
+                var from = $scope.start + $scope.rows.length;
+                setStart(from);
+                if ($scope.hideSeen) {
+                    // hide the results already seen
+                    // so we don't page over new results.
+                    from = from - seenRows();
+                }
 
-            loadRecords(from);
+                loadRecords(from);
+            } else {
+                $scope.appending = false;
+            }
         }
     };
 
@@ -431,7 +438,6 @@ function magnificPopupLink(scope, element, attrs) {
             type: 'image',
             verticalFit: true,
             delegate: 'a',
-            preload: [1,2],
             gallery: {
                 enabled: true
             },
