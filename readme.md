@@ -25,7 +25,7 @@ technologies I had my eye on for a while, so don't expect much in the way of sup
 #### It consists of :
 
 1. [CouchDB](http://couchdb.apache.org) database, with all images as attachments.
-1. [Elasticsearch](http://elasticsearch.org) used to index and query the data. Indexes the couch documents via the couchdb river ([article](http://daemon.co.za/2012/05/elasticsearch-5-minutes/\))
+1. [Elasticsearch](http://elasticsearch.org) used to index and query the data. ([Indexes the couch documents via the couchdb river](http://daemon.co.za/2012/05/elasticsearch-5-minutes/))
 1. [Node.js](http://nodejs.org) based proxy, that mostly is a straight pass-through to ES/Couch.
 1. [CouchApp](http://couchapp.org) to host the UI. (my first)
 1. [node.io](http://node.io) based scraping back-end, allowing multi-threaded mirroring of sites. (my first)
