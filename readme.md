@@ -29,7 +29,7 @@ technologies I had my eye on for a while, so don't expect much in the way of sup
 1. [Node.js](http://nodejs.org) based proxy, that mostly is a straight pass-through to ES/Couch.
 1. [CouchApp](http://couchapp.org) to host the UI. (my first)
 1. [node.io](http://node.io) based scraping back-end, allowing multi-threaded mirroring of sites. (my first)
-1. [Angular](http://angularjs.org) based front end, which i never (my first)
+1. [Angular](http://angularjs.org) based front end (my first)
 
 #### It also uses : 
 
