@@ -49,6 +49,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.rows         = [];
     $scope.facets       = {};
     $scope.start        = $cookieStore.get('start') || 1;
+    $scope.infStart     = $scope.start;
     $scope.from         = $scope.start;
     $scope.server       = cornercouch();
     $scope.db           = $scope.server.getDB('api');
@@ -211,6 +212,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     }
 
     function setInfinite(state) {
+
+        if (state) {
+            $scope.infStart = $scope.start;
+        }
+
         $scope.infinite = state;
         $cookieStore.put('infinite', state);
     }
@@ -301,6 +307,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
         $scope.start = start;
         $cookieStore.put('start', start);
+
     }
 
     function seenRows() {
@@ -321,7 +328,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         if (!$scope.appending && $scope.infinite) {
             $scope.appending = true;
             if ($scope.canNext()) {
-                var from = $scope.start + $scope.rows.length;
+                var from = $scope.infStart + $scope.rows.length;
                 setStart(from);
                 if ($scope.hideSeen) {
                     // hide the results already seen
