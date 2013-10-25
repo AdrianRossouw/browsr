@@ -10,6 +10,14 @@ module.exports = function(grunt) {
 
   'use strict';
 
+  var jekyllConfig = "my_setting: 'string1' \r\n"+
+"isLocal : false \r\n"+
+"permalink: /:title/ \r\n"+
+"exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'magnific-popup.sublime-project', 'magnific-popup.sublime-workspace', '.htaccess'] \r\n"+
+"auto: true \r\n"+
+"mfpversion: <%= pkg.version %> \r\n"+
+"pygments: true \r\n";
+
   // Project configuration.
   grunt.initConfig({
     // Metadata.
@@ -34,33 +42,14 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      all: ['Gruntfile.js', 'src/js/*.js'],
+      all: [
+        'Gruntfile.js',
+        'src/js/*.js'
+      ],
       options: {
-        "curly": false,
-        "eqeqeq": true,
-        "immed": true,
-        "latedef": true,
-        "newcap": true,
-        "noarg": true,
-        "sub": true,
-        "undef": false,
-        "unused": true,
-        "boss": true,
-        "eqnull": true,
-        "browser": true,
-
-        "predef": [
-          "jQuery",
-          "define",
-          "module",
-          "console",
-          "mfp",
-          "$"
-        ]
+        jshintrc: '.jshintrc'
       }
-
     },
-
 
     mfpbuild: {
       all: {
@@ -83,12 +72,14 @@ module.exports = function(grunt) {
       dev: {
         src: 'website',
         dest: '_site',
-        url: 'local'
+        url: 'local',
+        raw: jekyllConfig + "url: local"
       },
       production: {
         src: 'website',
         dest: '_production',
-        url: 'production'
+        url: 'production',
+        raw: jekyllConfig + "url: production"
       }
     },
 
@@ -194,7 +185,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');

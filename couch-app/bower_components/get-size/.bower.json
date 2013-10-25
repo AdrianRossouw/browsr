@@ -1,6 +1,6 @@
 {
   "name": "get-size",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "main": "get-size.js",
   "description": "measures element size",
   "dependencies": {
@@ -10,11 +10,11 @@
     "qunit": "~1.10"
   },
   "homepage": "https://github.com/desandro/get-size",
-  "_release": "1.1.4",
+  "_release": "1.1.5",
   "_resolution": {
     "type": "version",
-    "tag": "v1.1.4",
-    "commit": "7ef8ac563490d7822162bda79515a824504d2822"
+    "tag": "v1.1.5",
+    "commit": "4b058e222736990c5a88ad45427c69464eade160"
   },
   "_source": "git://github.com/desandro/get-size.git",
   "_target": ">=1.1.4 <2.0",

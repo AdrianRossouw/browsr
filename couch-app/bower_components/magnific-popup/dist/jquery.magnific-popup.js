@@ -1,4 +1,4 @@
-/*! Magnific Popup - v0.9.6 - 2013-09-29
+/*! Magnific Popup - v0.9.7 - 2013-10-10
 * http://dimsemenov.com/plugins/magnific-popup/
 * Copyright (c) 2013 Dmitry Semenov; */
 ;(function($) {
@@ -1051,6 +1051,12 @@ var AJAX_NS = 'ajax',
 		if(_ajaxCur) {
 			_body.removeClass(_ajaxCur);
 		}
+	},
+	_destroyAjaxRequest = function() {
+		_removeAjaxCursor();
+		if(mfp.req) {
+			mfp.req.abort();
+		}
 	};
 
 $.magnificPopup.registerModule(AJAX_NS, {
@@ -1066,14 +1072,9 @@ $.magnificPopup.registerModule(AJAX_NS, {
 			mfp.types.push(AJAX_NS);
 			_ajaxCur = mfp.st.ajax.cursor;
 
-			_mfpOn(CLOSE_EVENT+'.'+AJAX_NS + ' BeforeChange.' + AJAX_NS, function() {
-				_removeAjaxCursor();
-				if(mfp.req) {
-					mfp.req.abort();
-				}
-			});
+			_mfpOn(CLOSE_EVENT+'.'+AJAX_NS, _destroyAjaxRequest);
+			_mfpOn('BeforeChange.' + AJAX_NS, _destroyAjaxRequest);
 		},
-
 		getAjax: function(item) {
 
 			if(_ajaxCur)
@@ -1678,7 +1679,7 @@ var _getLoopedId = function(index) {
 		return index;
 	},
 	_replaceCurrTotal = function(text, curr, total) {
-		return text.replace('%curr%', curr + 1).replace('%total%', total);
+		return text.replace(/%curr%/gi, curr + 1).replace(/%total%/gi, total);
 	};
 
 $.magnificPopup.registerModule('gallery', {
@@ -1742,8 +1743,8 @@ $.magnificPopup.registerModule('gallery', {
 			_mfpOn('BuildControls' + ns, function() {
 				if(mfp.items.length > 1 && gSt.arrows && !mfp.arrowLeft) {
 					var markup = gSt.arrowMarkup,
-						arrowLeft = mfp.arrowLeft = $( markup.replace('%title%', gSt.tPrev).replace('%dir%', 'left') ).addClass(PREVENT_CLOSE_CLASS),			
-						arrowRight = mfp.arrowRight = $( markup.replace('%title%', gSt.tNext).replace('%dir%', 'right') ).addClass(PREVENT_CLOSE_CLASS);
+						arrowLeft = mfp.arrowLeft = $( markup.replace(/%title%/gi, gSt.tPrev).replace(/%dir%/gi, 'left') ).addClass(PREVENT_CLOSE_CLASS),			
+						arrowRight = mfp.arrowRight = $( markup.replace(/%title%/gi, gSt.tNext).replace(/%dir%/gi, 'right') ).addClass(PREVENT_CLOSE_CLASS);
 
 					var eName = supportsFastClick ? 'mfpFastClick' : 'click';
 					arrowLeft[eName](function() {
