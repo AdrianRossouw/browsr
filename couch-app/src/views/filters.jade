@@ -1,7 +1,7 @@
 .navbar-btn.btn-default.btn-group.navbar-filters
   span.hide(ng-repeat-start='(facetName, facet) in facets')
 
-  button.btn.btn-default(
+  button.btn.btn-default.navbar-text(
       ng-hide='!isFilter(facetName)',
       ng-click='toggleFilter(facetName, filterValue(facetName))',
       ng-init='facetClass = (facetName+"-"+filterValue(facetName))',

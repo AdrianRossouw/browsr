@@ -11,7 +11,8 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
       var dbName = window.dbName = '#{dbName}';
 
   body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'",
-    ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)'),
+      ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)')
+
     nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
       .navbar-header
         a.navbar-brand(href='#', ng-click='resetAll()')= title
