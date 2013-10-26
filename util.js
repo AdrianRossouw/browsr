@@ -15,8 +15,8 @@ function promise(fn) {
     return dfr.promise();
 
     function callbackFn(err) {
-        if (err) { return dfr.reject(err); }
-        dfr.resolve(_(arguments).rest());
+        if (err) { return dfr.reject.apply(null, err); }
+        dfr.resolve.apply(null, _(arguments).rest());
     }
 }
 

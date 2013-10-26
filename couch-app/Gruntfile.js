@@ -44,6 +44,14 @@ module.exports = function (grunt) {
 
             }
         },
+        shell: {
+            install: {
+                command: 'node install.js'
+            },
+            update: {
+                command: 'node.io jobs/update.js'
+            }
+        },
         copy: {
             dist: {
                 expand: true, flatten: true, filter: 'isFile',
@@ -159,6 +167,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-couchapp');
+    grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
     grunt.registerTask('default', [
@@ -170,6 +179,17 @@ module.exports = function (grunt) {
         'jade',
         'mkcouchdb',
         'couchapp'
+    ]);
+
+    grunt.registerTask('install', [
+        'default',
+        'shell:install',
+        'shell:update'
+    ]);
+
+    grunt.registerTask('update', [
+        'default',
+        'shell:update'
     ]);
 
 };

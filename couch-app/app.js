@@ -52,7 +52,7 @@ var ddoc = {
         }
     },
     updates: {
-        "update_1": function(doc, req) {
+        "update_0": function(doc, req) {
             var message = 'no change';
             if (!doc.dbVersion && doc._id !== '_design/app') {
                 doc.dbVersion = 1;

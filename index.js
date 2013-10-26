@@ -10,7 +10,6 @@ var _       = require('underscore');
 var app     = express();
 var config  = require('./config');
 
-
 var couchUrl = util.designDocUrl(config.couchdb) + '/_rewrite';
 var esUrl = util.dbUrl(config.elasticsearch);
 
@@ -36,9 +35,9 @@ app.get('/jobs/:driver/*?', function(req, res, next) {
     if (_jobs[key]) {
         var state = _jobs[key].state();
         var _stateMap = {
-            'rejected': 500,
-            'resolved': 200,
-            'pending': 202
+            'rejected' : 500,
+            'resolved' : 200,
+            'pending'  : 202
         };
 
         res.send(_stateMap[state], {status: state});
