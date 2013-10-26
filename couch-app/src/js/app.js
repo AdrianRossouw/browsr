@@ -353,7 +353,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             .then(appendRows);
     }
 
-    $scope.loadInfinite = function() {
+    var loadFn = function() {
         if (!$scope.appending && $scope.infinite) {
             $scope.appending = true;
             if ($scope.canNext()) {
@@ -371,6 +371,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             }
         }
     };
+    $scope.loadInfinite = _.throttle(loadFn, 5000);
 
 
     $scope.toggleFilter = function(facet, value, type, priority) {
