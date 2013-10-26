@@ -3,12 +3,8 @@
   magnific-popup='magnific-popup',
   masonry-options='{transitionDuration: 0}')
 
-  .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows', ng-class='{favorite: brick.favorite}')
+  .masonry-brick(id='{{ brick.id }}', ng-repeat='brick in rows')
     span(ng-repeat='image in brick.images[1280]')
-      a(title='{{brick.site}}: {{image.width}}x{{image.height}}', href='api/{{ image.path }}')
-        span.badge.rating(ng-hide='!brick.rating')
-          span.glyphicon.glyphicon-star {{brick.rating}}
-
-
-        img(data-index='{{brick.id}}', ng-src='api/{{ brick.images[500][$index].path }}')
+      a(ng-class='ratingClass(brick)', title='{{brick.site}}: {{image.width}}x{{image.height}}', href='api/{{ image.path }}')
+        img(data-index='{{brick.id}}', ng-src='api/{{ brick.images[500][$index].path + (hideSeen ? "?seen" : "")}}')
     .sizer.clearfix

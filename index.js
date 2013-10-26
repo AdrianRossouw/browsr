@@ -15,6 +15,9 @@ var designDoc = config.couchdb.designDoc || 'app';
 var couchUrl = util.designDocUrl(config.couchdb) + '/_rewrite';
 var esUrl = util.dbUrl(config.elasticsearch);
 
+app.use('/api/*', express.json());
+app.use('/api/*', express.urlencoded());
+
 app.get('/js/*'    , passthrough(couchUrl));
 app.get('/fonts/*' , passthrough(couchUrl));
 app.get('/css/*'   , passthrough(couchUrl));
@@ -100,7 +103,9 @@ var _debouncedBuffer = _.debounce(seenBufferProcess, 10000);
 
 // register the last seen date for the records
 function setLastSeen(req, res, next) {
-    seenBuffer.push(req.url);
+    if (req.query.seen !== undefined) {
+        seenBuffer.push(req.url);
+    }
     _debouncedBuffer();
     next();
 }

@@ -3,9 +3,13 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
     a.navbar-brand(href='#', ng-click='resetAll()')= title
 
   .navbar-btn.btn-default.btn-group
-    span.dropdown.dropup(ng-repeat='(facetName, facet) in facets')
-      button.btn.btn-default(ng-hide='!isFilter(facetName)', ng-click='toggleFilter(facetName, filterValue(facetName))')
-        | {{filterValue(facetName)}} 
+    span.dropdown.dropup(ng-repeat='(facetName, facet) in facets',
+        ng-init='facetClass = (facetName+"-"+filterValue(facetName))')
+      button.btn.btn-default(ng-hide='!isFilter(facetName)',
+        ng-click='toggleFilter(facetName, filterValue(facetName))',
+        ng-class='facetClass+" "+facetName')
+        span.term
+          | {{filterValue(facetName)}} 
         b &times;
       button.btn.btn-default.dropdown-toggle(data-toggle='dropdown', ng-hide='isFilter(facetName)')
         | {{facetName}}  
@@ -13,15 +17,17 @@ nav.navbar.navbar-default.navbar-fixed-bottom(role='navigation')
       ul.dropdown-menu(role='menu', ng-hide='isFilter(facetName)')
         li(ng-class="isFilter(facetName, term.term) ? 'active' : ''",
           ng-repeat='term in facet.terms')
-          a(ng-click='toggleFilter(facetName, term.term, facet._type)')
-            | {{term.term}}
+          a(ng-click='toggleFilter(facetName, term.term, facet._type)',
+            ng-init='facetClass = facetName+"-"+term.term',
+            ng-class='facetClass+" "+facetName')
+            span.term
+              | {{term.term}}
             span.pull-right.badge {{term.count}}
 
   .navbar-btn.btn-default.btn-group.pull-right
     button.btn.btn-default(ng-class="canBack() ? '' : 'disabled'", type='button',ng-click='stepBack()')
       a
         span.glyphicon.glyphicon-step-backward
-
 
     button.btn.btn-default(ng-class="seenClass()", type='button', ng-click='toggleSeen()')
       a

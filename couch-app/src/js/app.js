@@ -73,7 +73,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     var facets = {
         site: ejs.TermsFacet('site')
             .field('site')
-            .size(40),
+            .size(100),
         tags: ejs.TermsFacet('tags')
             .field('tags')
             .size(20),
@@ -159,13 +159,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
 
     allQuery();
-
     updateSearch();
 
     function allQuery() {
         $scope.query = $scope.query
             .query(ejs.MatchAllQuery());
-
     }
 
     $scope.resetAll = function() {
@@ -196,10 +194,13 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.appending = false;
 
         function mapFacets(memo, facet, key) {
-
             if (facet._type === 'date_histogram') {
                 facet.terms = _(facet.entries).map(mapEntries);
                 facet.total = _(facet.entries).reduce(sumFn, 0);
+            } else if (key === 'rating') {
+                facet.terms = _(facet.terms).sortBy(function(term) {
+                    return -parseInt(term.term, 10);
+                });
             }
 
             if (!facet.total) { return memo; }
@@ -210,7 +211,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         function sumFn(memo, obj) {
             return memo + obj.count;
         }
-        function mapEntries(entry) {
+
+         function mapEntries(entry) {
             return {
                 term: $scope.getMonth(parseInt(entry.time, 10)),
                 count: entry.count
@@ -268,9 +270,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
                 from = from - seenRows();
             }
 
-
             loadRecords(from);
         }
+    };
+
+    $scope.ratingClass = function(image) {
+        return (image.rating) ? 'rating rating-'+image.rating : '';
     };
 
     $scope.seenClass = function() {
@@ -391,7 +396,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         setStart(1);
         $scope.from = $scope.start;
         updateSearch();
-
     };
 
     $scope.filterValue = function(facet) {
@@ -400,6 +404,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             .findWhere(obj);
         return where ? where.value : '';
     };
+
     $scope.isFilter = function(facet, value) {
         var obj = {facet: facet};
         if (!_(value).isUndefined) {

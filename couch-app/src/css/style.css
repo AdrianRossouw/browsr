@@ -18,6 +18,9 @@ body { color: #333;
 
 .dropdown-menu {
   min-width: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 600px
 }
 
 @media (min-width: 992px) { 
@@ -29,7 +32,10 @@ body { color: #333;
 @media (min-width: 1200px) { 
   .sizer {width:25%;}
   .masonry-brick { width: 25%; }
+}
 
+.navbar .dropdown .rating span.term  {
+  opacity: 0 !important;
 }
 
 .masonry-brick img {
@@ -44,12 +50,62 @@ body { color: #333;
   display: block;
 }
 
-.masonry-brick .rating {
-   position: absolute;
-   right: 20px;
-   top: 20px;
-   font-size: 16px;
- }
+.appending .masonry-brick .rating:before {
+  display: none;
+}
+
+.masonry-brick .rating:before {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255,255,255,0.5);
+  padding:0 0 4px 4px;
+  border-radius: 10px;
+
+  font-size: 20px;
+  right: 10px;
+  top: 10px;
+}
+
+.dropdown .rating:before,
+.masonry-brick .rating:before {
+  letter-spacing: 0.2em;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dropdown .rating:before {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.dropdown .rating-5:before,
+.masonry-brick .rating-5:before {
+  content: "\e006\e006\e006\e006\e006";
+}
+
+.dropdown .rating-4:before,
+.masonry-brick .rating-4:before {
+  content: "\e006\e006\e006\e006";
+}
+
+.dropdown .rating-3:before,
+.masonry-brick .rating-3:before {
+  content: "\e006\e006\e006";
+}
+
+.dropdown .rating-2:before,
+.masonry-brick .rating-2:before {
+  content: "\e006\e006";
+}
+
+.dropdown .rating-1:before,
+.masonry-brick .rating-1:before {
+  content: "\e006";
+}
+
+
 
 img.selected {
   width: 100%;

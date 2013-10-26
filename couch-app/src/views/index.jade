@@ -14,7 +14,7 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
     ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)')
     span(ng-include, src="'views/navbar.html'")
 
-    .row(infinite-scroll='loadInfinite()', infinite-scroll-distance='2', hm-tap='tap($event)')
+    .row(ng-class='{appending: appending}', infinite-scroll='loadInfinite()', infinite-scroll-distance='2', hm-tap='tap($event)')
       .col-lg-12
         span(ng-include, src="'views/masonry.html'")
         
