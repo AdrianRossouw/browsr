@@ -1,0 +1,18 @@
+.navbar-btn.btn-default.btn-group.pull-right
+  button.btn.btn-default(ng-class="{disabled: canBack()}", type='button',ng-click='stepBack()')
+    a: span.glyphicon.glyphicon-step-backward
+  button.btn.btn-default(ng-class="seenClass()", type='button', ng-click='toggleSeen()')
+    a: span.glyphicon.glyphicon-eye-close
+  button.btn.btn-default(ng-class="{active: infinite}", type='button', ng-click='toggleInfinite()')
+    a: span.glyphicon.glyphicon-refresh
+  button.btn.btn-default(ng-class="{disabled: !canNext()}", type='button', ng-click='stepNext()')
+    a: span.glyphicon.glyphicon-step-forward
+
+.navbar-btn.btn-default.btn-group.pull-right
+  button.btn.btn-default(
+      ng-repeat='rating in stars',
+      ng-click='setRatingGiven(rating)')
+    a
+      span.glyphicon.glyphicon-star(ng-hide='ratingGiven < rating')
+      span.glyphicon.glyphicon-star-empty(ng-hide='ratingGiven >= rating')
+

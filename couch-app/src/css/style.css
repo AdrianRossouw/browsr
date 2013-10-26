@@ -17,7 +17,7 @@ body { color: #333;
 }
 
 .dropdown-menu {
-  min-width: 260px;
+  min-width: 400px;
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 600px
@@ -34,7 +34,7 @@ body { color: #333;
   .masonry-brick { width: 25%; }
 }
 
-.navbar .dropdown .rating span.term  {
+.navbar .navbar-filters .rating span.term  {
   opacity: 0 !important;
 }
 
@@ -66,7 +66,7 @@ body { color: #333;
   top: 10px;
 }
 
-.dropdown .rating:before,
+.navbar-filters .rating:before,
 .masonry-brick .rating:before {
   letter-spacing: 0.2em;
   font-family: 'Glyphicons Halflings';
@@ -76,31 +76,31 @@ body { color: #333;
   -webkit-font-smoothing: antialiased;
 }
 
-.dropdown .rating:before {
+.navbar-filters .rating:before {
   color: rgba(0, 0, 0, 0.5);
 }
 
-.dropdown .rating-5:before,
+.navbar-filters .rating-5:before,
 .masonry-brick .rating-5:before {
   content: "\e006\e006\e006\e006\e006";
 }
 
-.dropdown .rating-4:before,
+.navbar-filters .rating-4:before,
 .masonry-brick .rating-4:before {
   content: "\e006\e006\e006\e006";
 }
 
-.dropdown .rating-3:before,
+.navbar-filters .rating-3:before,
 .masonry-brick .rating-3:before {
   content: "\e006\e006\e006";
 }
 
-.dropdown .rating-2:before,
+.navbar-filters .rating-2:before,
 .masonry-brick .rating-2:before {
   content: "\e006\e006";
 }
 
-.dropdown .rating-1:before,
+.navbar-filters .rating-1:before,
 .masonry-brick .rating-1:before {
   content: "\e006";
 }
@@ -118,6 +118,6 @@ img.selected {
   display: block;
 }
 
-.btn-group {
+.navbar-btn {
   margin-right: 0.5em;
 }

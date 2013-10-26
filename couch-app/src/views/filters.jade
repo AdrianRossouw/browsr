@@ -1,0 +1,31 @@
+.navbar-btn.btn-default.btn-group.navbar-filters
+  span.hide(ng-repeat-start='(facetName, facet) in facets')
+
+  button.btn.btn-default(
+      ng-hide='!isFilter(facetName)',
+      ng-click='toggleFilter(facetName, filterValue(facetName))',
+      ng-init='facetClass = (facetName+"-"+filterValue(facetName))',
+      ng-class='facetClass+" "+facetName')
+    span.term {{filterValue(facetName)}} 
+    b &times;
+
+
+  .btn-group.btn-default.dropdown.dropup
+    button.btn.btn-default.dropdown-toggle(
+        ng-hide='isFilter(facetName)',
+        data-toggle='dropdown')
+      .filter {{facetName}}  
+        b.caret
+
+    ul.dropdown-menu(role='menu', ng-hide='isFilter(facetName)')
+      li(ng-class="isFilter(facetName, term.term) ? 'active' : ''",
+          ng-repeat='term in facet.terms')
+        a(ng-click='toggleFilter(facetName, term.term, facet._type)',
+            ng-init='facetClass = facetName+"-"+term.term',
+            ng-class='facetClass+" "+facetName')
+          span.term {{term.term}}
+          span.pull-right.badge {{term.count}}
+
+
+  span.sr-only.hide(ng-repeat-end)
+

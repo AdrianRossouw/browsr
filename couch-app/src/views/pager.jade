@@ -1,0 +1,5 @@
+p.navbar-text.pull-right(ng-show='appending')
+  span.glyphicon.glyphicon-cog
+    |  loading
+p.navbar-text.pull-right(ng-show='!appending')
+  | {{from}} - {{from + rows.length}} / {{total}}
