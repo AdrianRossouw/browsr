@@ -9,6 +9,8 @@ var util    = require('./util');
 var _       = require('underscore');
 var app     = express();
 var config  = require('./config');
+var db      = require('nano')(util.dbUrl(config.couchdb));
+var designDoc = config.couchdb.designDoc || 'app';
 
 var couchUrl = util.designDocUrl(config.couchdb) + '/_rewrite';
 var esUrl = util.dbUrl(config.elasticsearch);
@@ -18,6 +20,7 @@ app.get('/fonts/*' , passthrough(couchUrl));
 app.get('/css/*'   , passthrough(couchUrl));
 app.get('/img/*'   , passthrough(couchUrl));
 app.get('/views/*' , passthrough(couchUrl));
+app.get('/api/*'   , setLastSeen);
 app.all('/api/*'   , passthrough(couchUrl));
 app.all('/search/*', passthrough(esUrl, 'search/pvt2/'));
 
@@ -71,4 +74,38 @@ function passthrough(targetUrl, match, replace) {
 // this allows for html5 pushState in angular.
 function getIndex(req, res, next) {
     req.pipe(request(couchUrl)).pipe(res);
+}
+
+var seenBuffer = [];
+
+function seenBufferProcess() {
+    // make a clean copy for ourselves, and destroy the buffer.
+    var _buffer = _(seenBuffer).clone();
+    seenBuffer = [];
+
+    var seenList = _(_buffer).chain()
+       .map(extractId)
+       .compact()
+       .uniq()
+       .value();
+
+    _(seenList).each(atomicSeen);
+
+    function atomicSeen(id) {
+        db.atomic(designDoc, 'lastSeen', id, function() {});
+    }
+}
+
+var _debouncedBuffer = _.debounce(seenBufferProcess, 10000);
+
+// register the last seen date for the records
+function setLastSeen(req, res, next) {
+    seenBuffer.push(req.url);
+    _debouncedBuffer();
+    next();
+}
+
+function extractId(url) {
+    var matches = /\/api\/(.*)\/500\/.*$/.exec(url);
+    return (matches && matches[1]) || false;
 }

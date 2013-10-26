@@ -6,7 +6,9 @@
                 "date": {"type": "date", "format":"YYYY-MM-dd HH:mm:ss z||yyyy-MM-dd||yyyy-MM"},
                 "favorite": {"type": "boolean"},
                 "timestamp": {"type": "date"},
+                "rating": {"type": "integer"},
                 "created": {"type": "date"},
+                "lastSeen": {"type": "date"},
                 "images": {
                     "index_name": "image",
                     "properties": {

@@ -9,7 +9,7 @@ var designDoc = config.couchdb.designDoc || 'app';
 
 var options = {
     timeout : 10,
-    max     : 50,
+    max     : 200,
     retries : 3
 };
 

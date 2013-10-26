@@ -17,39 +17,6 @@ var ddoc = {
         }
     },
     views: {
-        missing: {
-            map: function(doc) {
-                if (doc.images && !doc._attachments) {
-                    return emit(doc._id + '?_rev=' + doc._rev, doc._id);
-                }
-                if (doc.images && doc._attachments) {
-                    var keys = doc.images.map(function(img) {
-                        return img.maxWidth+"/"+img.fileno;
-                    });
-                    keys.map(function(key) {
-                        if (!doc._attachments[key]) {  emit(doc._id + '?_rev=' + doc._rev, key); }
-                    });
-                }
-            }
-        },
-        wrongsize: {
-            map: function(doc) {
-                var extract = /_([0-9])*\..{3}$/;
-                if (doc.images) {
-                    doc.images.forEach(function(img) {
-                        if (img.maxWidth === 1280) {
-                            var matches = extract.exec(img.url);
-                            var urlSize = parseInt(matches[1], 10);
-
-                            if ((urlSize === 500) && (img.width > 500)) {
-                                emit(doc._id, img);
-                            }
-                        }
-                    });
-                }
-            }
-
-        }
     },
     updates: {
         "update_0": function(doc, req) {
@@ -60,6 +27,33 @@ var ddoc = {
             }
 
             return [doc, message];
+        },
+        "update_1": function(doc, req) {
+            var message = 'no change';
+            if (doc.dbVersion < 2 && doc._id !== '_design/app') {
+                doc.dbVersion = 2;
+
+                if (doc.favorite) {
+                    doc.rating = 3;
+                }
+                if (doc.favorDate) {
+                    doc.lastSeen = doc.favorDate;
+                }
+                message = 'migrated to new rating format';
+            }
+
+            return [doc, message];
+        },
+        "lastSeen": function(doc, req) {
+            var now = Date.now();
+            var fiveMinAgo = now - 300000;
+
+            if (!doc.lastSeen || (doc.lastSeen < fiveMinAgo)) {
+                doc.lastSeen = now;
+                return [doc, "last seen updated"];
+            }
+
+            return [null, 'seen recently'];
         }
     },
     lists: {},

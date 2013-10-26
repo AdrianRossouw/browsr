@@ -38,6 +38,7 @@ function ctrlThumbs($scope) {
 
 function ctrlMain( $scope, cornercouch, $routeParams,
     ejsResource, $location, $cookies,  $cookieStore) {
+    $(document).scrollTop(0);
 
     var ejs             = ejsResource('/search');
 
@@ -50,6 +51,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.rows         = [];
     $scope.facets       = {};
     $scope.start        = $cookieStore.get('start') || 1;
+    $scope.seenStart    = $cookieStore.get('seenStart') || Date.now();
     $scope.infStart     = $scope.start;
     $scope.from         = $scope.start;
     $scope.server       = cornercouch();
@@ -93,7 +95,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     filterFns.date_histogram = function(filter) {
-        console.log(filter);
         return ejs.RangeFilter(filter.facet)
             .from(filter.value)
             .to(filter.value + '||+1M-1d');
@@ -108,7 +109,10 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         if ($scope.onlyLikes) {
             filter = filter.must(ejs.TermFilter('favorite', true));
         } else if ($scope.hideSeen) {
-            filter = filter.mustNot(ejs.ExistsFilter('favorite'));
+            // do not show anything seen in the last few minutes
+            filter = filter
+                .should(ejs.NotFilter(ejs.ExistsFilter('lastSeen')))
+                .should(ejs.NumericRangeFilter('lastSeen').gte($scope.seenStart));
         }
 
         if ($scope.filters.length === 1) {
@@ -295,7 +299,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     $scope.stepBack = function() {
         if ($scope.canBack()) {
-            setStart($scope.start - $scope.perPage);
+            setStart($scope.start - $scope.perPage, true);
             $scope.from = $scope.start;
             $scope.appending = false;
             $scope.rows = [];
@@ -305,10 +309,16 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
     };
 
-    function setStart(start) {
+    function setStart(start, protectSeen) {
         if ($scope.total && (start > $scope.total)) {
             start = $scope.total % $scope.perPage;
         }
+        if (($scope.start === 1) && !protectSeen) {
+            // you will still return results seen from this moment on.
+            $scope.seenStart = Date.now();
+            $cookieStore.put('seenStart', $scope.seenStart);
+        }
+
         $scope.start = start;
         $cookieStore.put('start', start);
 

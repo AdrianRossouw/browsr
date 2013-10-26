@@ -94,6 +94,7 @@ module.exports = function (grunt) {
                     "bower_components/hammerjs/dist/jquery.hammer.js",
                     "bower_components/angular-hammer/angular-hammer.js",
                     "bower_components/angular-masonry/angular-masonry.js",
+                    "bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
                     "bower_components/CornerCouch/angular-cornercouch.js",
                     "bower_components/elastic.js/dist/elastic.js",
                     "bower_components/elastic.js/dist/elastic-angular-client.js",
