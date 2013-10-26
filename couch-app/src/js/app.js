@@ -73,7 +73,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     var facets = {
         site: ejs.TermsFacet('site')
             .field('site')
-            .size(35),
+            .size(40),
         tags: ejs.TermsFacet('tags')
             .field('tags')
             .size(20),
@@ -107,15 +107,17 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             .to(filter.value + '||+1M-1d');
     };
 
+    filterFns.rating = function(filter) {
+        return ejs.TermFilter(filter.facet, parseInt(filter.value, 10));
+    };
+
     function updateSearch() {
         $(document).scrollTop(0);
 
         var filter = ejs.BoolFilter();
         var mapped = _($scope.filters).map(mapFilters);
 
-        if ($scope.onlyLikes) {
-            filter = filter.must(ejs.TermFilter('rating', true));
-        } else if ($scope.hideSeen) {
+        if ($scope.hideSeen) {
             // do not show anything seen in the last few minutes
             filter = filter
                 .should(ejs.NotFilter(ejs.ExistsFilter('lastSeen')))
@@ -410,7 +412,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
         var where = _($scope.rows).findWhere({id: id});
 
-        var newState = where.rating ? null : $scope.ratingGiven;
+        var newState = where.rating !== $scope.ratingGiven ? $scope.ratingGiven : null;
         where.rating = newState;
 
         var doc = $scope.db.newDoc();
@@ -430,6 +432,23 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
     };
     $scope.keyDown = function($event) {
+        var keyCode = $event.keyCode || $event.which,
+        arrow = {left: 37, up: 38, right: 39, down: 40 };
+
+        switch (keyCode) {
+        case arrow.up:
+            $event.preventDefault();
+            var upOne = $scope.ratingGiven + 1;
+            $scope.setRatingGiven(upOne <= 5 ? upOne : 5);
+            break;
+        case arrow.down:
+            $event.preventDefault();
+            var downOne = $scope.ratingGiven - 1;
+            $scope.setRatingGiven(downOne ? downOne : 1);
+            break;
+        }
+
+
         if ($event.which === 32) {
             toggleRating(fuckingGlobal);
         }
