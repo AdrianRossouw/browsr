@@ -26,9 +26,11 @@
     "angular-route": "~1.2.0-rc.2",
     "angular-bootstrap": "~0.6.0",
     "angular-touch": "~1.2.0-rc.2",
-    "angular-hammer": "~1.0.2"
+    "angular-hammer": "~1.0.2",
+    "bootstrap-ui": "~0.6.0"
   },
   "resolutions": {
-    "angular": "1.2.0-rc.3"
+    "angular": "1.2.0-rc.3",
+    "angular-bootstrap": "master"
   }
 }

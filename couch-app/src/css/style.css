@@ -44,15 +44,11 @@ body { color: #333;
   display: block;
 }
 
-.favorite {
-//  border: 2px solid lightgreen;
-//  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-}
-.favorite a:before {
-   content: url(/img/like.png);
+.masonry-brick .rating {
    position: absolute;
    right: 20px;
    top: 20px;
+   font-size: 16px;
  }
 
 img.selected {

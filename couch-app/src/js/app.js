@@ -52,6 +52,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.facets       = {};
     $scope.start        = $cookieStore.get('start') || 1;
     $scope.seenStart    = $cookieStore.get('seenStart') || Date.now();
+    $scope.ratingGiven  = $cookieStore.get('ratingGiven') || 3;
     $scope.infStart     = $scope.start;
     $scope.from         = $scope.start;
     $scope.server       = cornercouch();
@@ -67,6 +68,8 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.root = document.location;
     }
 
+    $scope.stars = _.range(1, 6);
+
     var facets = {
         site: ejs.TermsFacet('site')
             .field('site')
@@ -76,7 +79,10 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             .size(20),
         date: ejs.DateHistogramFacet('date')
             .keyField('date')
-            .interval('month')
+            .interval('month'),
+        rating: ejs.TermsFacet('rating')
+            .field('rating')
+            .size(6)
     };
 
     $scope.query = ejs.Request()
@@ -86,6 +92,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         .facet(facets.site)
         .facet(facets.tags)
         .facet(facets.date)
+        .facet(facets.rating)
         .sort(ejs.Sort('timestamp').desc());
 
     var filterFns = {};
@@ -107,7 +114,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         var mapped = _($scope.filters).map(mapFilters);
 
         if ($scope.onlyLikes) {
-            filter = filter.must(ejs.TermFilter('favorite', true));
+            filter = filter.must(ejs.TermFilter('rating', true));
         } else if ($scope.hideSeen) {
             // do not show anything seen in the last few minutes
             filter = filter
@@ -129,6 +136,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         facets.site = facets.site.facetFilter(filter);
         facets.tags = facets.tags.facetFilter(filter);
         facets.date = facets.date.facetFilter(filter);
+        facets.rating = facets.rating.facetFilter(filter);
 
         $scope.query = $scope.query.filter(filter);
 
@@ -229,6 +237,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $cookieStore.put('infinite', state);
     }
 
+    $scope.setRatingGiven = function(rating) {
+        $scope.ratingGiven = rating;
+        $cookieStore.put('ratingGiven', rating);
+    };
+
     $scope.toggleInfinite = function() {
         setInfinite(!$scope.infinite);
     };
@@ -326,7 +339,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
 
     function seenRows() {
         return _($scope.rows).reduce(function(c, r) {
-            return _(r).has('favorite') ? c + 1 : c;
+            return _(r).has('rating') ? c + 1 : c;
         }, 0);
     }
 
@@ -392,19 +405,18 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         return !!_($scope.filters).findWhere(obj);
     };
  
-    function toggleFavorite(id) {
+    function toggleRating(id) {
         if (!id) { return false; }
 
         var where = _($scope.rows).findWhere({id: id});
 
-        var newState = !where.favorite;
-        where.favorite = newState;
+        var newState = where.rating ? null : $scope.ratingGiven;
+        where.rating = newState;
 
         var doc = $scope.db.newDoc();
 
         doc.load(id).then(function(data) {
-            doc.favorite = newState;
-            doc.favorDate = Date.now();
+            doc.rating = newState;
             doc.save();
         }, function(err) {
             console.log('error', err);
@@ -414,12 +426,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.mouseDown = function($event) {
         if ($event.which === 3) {
             $event.preventDefault();
-            mouseFavorite($event);
+            mouseRating($event);
         }
     };
     $scope.keyDown = function($event) {
         if ($event.which === 32) {
-            toggleFavorite(fuckingGlobal);
+            toggleRating(fuckingGlobal);
         }
     };
 
@@ -429,7 +441,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1);
     };
 
-    function mouseFavorite($event) {
+    function mouseRating($event) {
 
         var index = false;
 
@@ -439,12 +451,12 @@ function ctrlMain( $scope, cornercouch, $routeParams,
             index = fuckingGlobal;
         }
 
-        if (index) { toggleFavorite(index); }
+        if (index) { toggleRating(index); }
     }
 
     $scope.tap = function($event) {
         if ($event.gesture.touches.length === 2) {
-            mouseFavorite($event);
+            mouseRating($event);
         }
     };
 
