@@ -44,6 +44,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     $scope.infinite     = $cookieStore.get('infinite') || false;
     $scope.$routeParams = $routeParams;
     $scope.searchNoHits = false;
+    $scope.dbName       = window.dbName;
     $scope.qs           = '';
     $scope.appending    = true;
     $scope.rows         = [];
@@ -64,7 +65,6 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         $scope.root = document.location;
     }
 
-
     var facets = {
         site: ejs.TermsFacet('site')
             .field('site')
@@ -78,7 +78,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     $scope.query = ejs.Request()
-        .indices("pvt2")
+        .indices($scope.dbName)
         .size($scope.perPage)
         .from($scope.start)
         .facet(facets.site)
@@ -204,7 +204,11 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         }
         function imageMapFn(obj) {
             obj.images = _(obj.images).chain()
-                .map(function(img) { img.id = obj._id; return img; })
+                .map(function(img) {
+                    img.id   = obj._id;
+                    img.isHd = img.width > 1280;
+                    return img;
+                })
                 .groupBy('maxWidth')
                 .value();
             return obj;
@@ -443,7 +447,7 @@ function magnificPopupLink(scope, element, attrs) {
     scope.$watch('rows', function() {
         $(element).magnificPopup({
             type: 'image',
-            verticalFit: true,
+            verticalFit: false,
             delegate: 'a',
             gallery: {
                 enabled: true

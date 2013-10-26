@@ -7,7 +7,9 @@ html(xmlns:ng='http://angularjs.org', ng-app='tumblrBrowsr')
     meta(charset="utf-8")
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
-      
+    script
+      var dbName = window.dbName = '#{dbName}';
+
   body(ng-controller='ctrlMain', ng-init="dbName='#{dbName}'",
     ng-keydown='keyDown($event)', ng-mousedown='mouseDown($event)')
     span(ng-include, src="'views/navbar.html'")

@@ -1,7 +1,11 @@
-var config = require('./config.json'),
-fs = require('fs'),
-_ = require('underscore');
+var config   = require('./config.json');
+var fs       = require('fs');
+var _        = require('underscore');
+var dbConfig = require('../config.json');
+var util    = require('../util');
 
+config.couchapp.db = util.dbUrl(dbConfig.couchdb);
+config.template.dbName = dbConfig.couchdb.db;
 
 
 module.exports = function (grunt) {

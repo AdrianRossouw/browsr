@@ -1,0 +1,12 @@
+{
+    "couchdb": {
+        "port"      : "5984",
+        "db"        : "pvt2",
+        "designDoc" : "app",
+        "dbVersion" : 0
+    },
+    "elasticsearch": {
+        "port" : "9200",
+        "db"   : "pvt2"
+    }
+}

@@ -1,6 +1,5 @@
 {
     "couchapp": {
-        "db": "http://localhost:5984/pvt2",
         "app": "app.js",
         "options": {
             "okay_if_exists": true,
@@ -9,7 +8,6 @@
     },
     "template": {
         "title": "browsr",
-        "dbName": "pvt2",
         "subtitle": "ui for browsing tumblr photo blogs"
     }
 }

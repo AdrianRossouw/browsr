@@ -5,27 +5,14 @@ var http    = require('http');
 var url     = require('url');
 var path    = require('path');
 var request = require('request');
+var util    = require('./util');
 var _       = require('underscore');
 var app     = express();
-
-_.mixin(require('underscore.deferred'));
-//app.use(express.urlencoded());
-//app.use(express.json());
+var config  = require('./config');
 
 
-var couchUrl = {
-    "protocol"   : "http:",
-    "port"       : "5984",
-    "hostname"   : "127.0.0.1",
-    "pathname"   : "/pvt2/_design/app/_rewrite"
-};
-
-var esUrl = {
-  "protocol" : "http:",
-  "port"     : "9200",
-  "hostname" : "127.0.0.1",
-  "pathname" : "/"
-};
+var couchUrl = util.designDocUrl(config.couchdb) + '/_rewrite';
+var esUrl = util.dbUrl(config.elasticsearch);
 
 app.get('/js/*'    , passthrough(couchUrl));
 app.get('/fonts/*' , passthrough(couchUrl));
@@ -33,24 +20,14 @@ app.get('/css/*'   , passthrough(couchUrl));
 app.get('/img/*'   , passthrough(couchUrl));
 app.get('/views/*' , passthrough(couchUrl));
 app.all('/api/*'   , passthrough(couchUrl));
-app.all('/search/*', passthrough(esUrl, '/search'));
-
+app.all('/search/*', passthrough(esUrl, 'search/pvt2/'));
 
 var _jobs = [];
-
-function promiseJob(job, args) {
-    var dfr = new _.Deferred();
-    nodeio.start(job, { args: args }, function(err, output) {
-        err ? dfr.reject(err) : dfr.resolve(output);
-    }, true);
-    return dfr.promise();
-}
 
 app.get('/jobs/:driver/*?', function(req, res, next) {
     var driver = req.params.driver;
     var args = (req.params[0]) ? req.params[0].split('/') : [];
     var key = [driver].concat(args).join('/');
-
 
     if (!jobs[driver]) { 
         return res.send(404, {status: 'no such job'});
@@ -66,12 +43,15 @@ app.get('/jobs/:driver/*?', function(req, res, next) {
 
         res.send(_stateMap[state], {status: state});
     } else {
-        _jobs[key] = promiseJob(jobs[driver].job, args);
+        _jobs[key] = util.promise(
+            nodeio.start,
+            jobs[driver].job,
+            {args: args}
+        );
 
         res.send(201, {status: 'started'});
     }
 });
-
 
 app.get('/' , getIndex);
 app.get('/*', getIndex); // catch-all
@@ -80,16 +60,10 @@ app.listen(5000);
 
 // pass the request through unhindered,
 // with it's additional pathname specified.
-function passthrough(targetUrl, pathChange) {
+function passthrough(targetUrl, match, replace) {
     return function(req, res, next) {
-        var passUrl = {};
-        _.defaults(passUrl, targetUrl);
-        passUrl.pathname = path.join(targetUrl.pathname, req.url);
-
-        if (pathChange) {
-            passUrl.pathname = passUrl.pathname.replace(pathChange, '');
-        }
-        var _url = url.format(passUrl);
+        var _url = targetUrl;
+        _url += !match ? req.url : req.url.replace(match, replace || '');
         req.pipe(request(_url)).pipe(res);
     };
 }
@@ -97,6 +71,5 @@ function passthrough(targetUrl, pathChange) {
 // all requests will return only the index page.
 // this allows for html5 pushState in angular.
 function getIndex(req, res, next) {
-    var _url = url.format(couchUrl);
-    req.pipe(request(_url)).pipe(res);
+    req.pipe(request(couchUrl)).pipe(res);
 }

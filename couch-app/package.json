@@ -7,7 +7,8 @@
     "couchapp": "0.10.x",
     "grunt-contrib-less": "~0.7.0",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-jade": "~0.8.0"
+    "grunt-contrib-jade": "~0.8.0",
+    "elastic.js": "~1.1.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
