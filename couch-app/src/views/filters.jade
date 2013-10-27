@@ -1,13 +1,13 @@
 .navbar-btn.btn-default.btn-group.navbar-filters
   span.hide(ng-repeat-start='(facetName, facet) in facets')
 
-  button.btn.btn-default.navbar-text(
+  button.btn.btn-default(
       ng-hide='!isFilter(facetName)',
       ng-click='toggleFilter(facetName, filterValue(facetName))',
       ng-init='facetClass = (facetName+"-"+filterValue(facetName))',
       ng-class='facetClass+" "+facetName')
     span.term {{filterValue(facetName)}} 
-    b &times;
+      b &times;
 
 
   .btn-group.btn-default.dropdown.dropup
@@ -28,4 +28,3 @@
 
 
   span.sr-only.hide(ng-repeat-end)
-

@@ -431,12 +431,84 @@ function ctrlMain( $scope, cornercouch, $routeParams,
         });
     }
 
+  //  $scope.rmbHeld = false;
+    $scope.rmbIndex = null;
+    $scope.clickCoords = null;
+
+    function rmbTarget($event) {
+        var index = null;
+
+        if (fuckingGlobal === null) {
+            index = $($event.target).attr('data-index');
+        } else {
+            index = fuckingGlobal;
+        }
+
+        return index;
+    }
+
     $scope.mouseDown = function($event) {
         if ($event.which === 3) {
+            console.log('right click down');
             $event.preventDefault();
-            mouseRating($event);
+
+            var target = rmbTarget($event);
+
+            if (target) {
+               // $scope.rmbHeld = true;
+                $scope.rmbIndex = target;
+                $scope.clickCoords = [$event.pageX, $event.pageY];
+            }
         }
     };
+
+    $scope.mouseUp = function($event) {
+        if ($event.which === 3) {
+            $event.preventDefault();
+
+            if ($scope.rmbIndex) {
+                toggleRating($scope.rmbIndex);
+            }
+
+          //  $scope.rmbHeld = false;
+            $scope.rmbIndex = null;
+            $scope.clickCoords = null;
+        }
+    };
+
+
+    var adjustRating = function(difference) {
+        var newRating = $scope.ratingGiven - difference;
+
+        if (newRating > 5) {
+            newRating = 5;
+        }
+
+        if (newRating < 1) {
+            newRating = 1;
+        }
+
+        if (newRating !== $scope.ratingGiven) {
+            console.log('adjusted to '+newRating);
+            $scope.ratingGiven = newRating;
+        }
+    };
+
+    $scope.mouseMove = _.throttle(function($event) {
+        if ($event.which === 3) {
+
+            if ($scope.rmbIndex && $scope.clickCoords) {
+                var xDiff = $event.pageX - $scope.clickCoords[0];
+                var sign = (xDiff < 0) ? -1 : 1;
+                var adjust = Math.floor(xDiff / 100);
+
+                console.log('move mouse', xDiff, adjust, $scope.clickCoords, $event.pageX);
+                $scope.clickCoords = [$event.pageX, $event.pageY];
+                adjustRating(adjust);
+            }
+        }
+    }, 5);
+
     $scope.keyDown = function($event) {
         var keyCode = $event.keyCode || $event.which,
         arrow = {left: 37, up: 38, right: 39, down: 40 };
@@ -467,15 +539,7 @@ function ctrlMain( $scope, cornercouch, $routeParams,
     };
 
     function mouseRating($event) {
-
-        var index = false;
-
-        if (fuckingGlobal === null) {
-            index = $($event.target).attr('data-index');
-        } else {
-            index = fuckingGlobal;
-        }
-
+        var index = rmbTarget($event);
         if (index) { toggleRating(index); }
     }
 
